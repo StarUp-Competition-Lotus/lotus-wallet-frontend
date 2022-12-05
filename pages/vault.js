@@ -9,7 +9,7 @@ export default function Home() {
             <div className={styles.navigation}>
                 <Navigation />
             </div>
-            <div className={styles.body}></div>
+            vault
         </div>
     );
 }
