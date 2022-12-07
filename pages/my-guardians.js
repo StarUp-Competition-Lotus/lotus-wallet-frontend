@@ -2,17 +2,14 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
 import Navigation from "../components/Navigation";
-import MainWallet from "../components/mainWallet";
 
-export default function Home() {
+export default function MyGuardians() {
     return (
         <div className={styles.app}>
             <div className={styles.navigation}>
                 <Navigation />
             </div>
-            <div className={styles.body}>
-                <MainWallet />
-            </div>
+            my guardians
         </div>
     );
 }

@@ -12,4 +12,8 @@
 
 .body {
     flex: 1;
+    background-color: #F3F4F6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
