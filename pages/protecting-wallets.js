@@ -1,15 +1,17 @@
-import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
 import Navigation from "../components/Navigation";
+import ProtectingWallets from "../components/protectingWallets";
 
-export default function GuardianList() {
+export default () => {
     return (
         <div className={styles.app}>
             <div className={styles.navigation}>
                 <Navigation />
             </div>
-            guardian list
+            <div className={styles.body}>
+                <ProtectingWallets />
+            </div>
         </div>
     );
 }
