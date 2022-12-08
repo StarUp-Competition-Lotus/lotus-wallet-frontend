@@ -26,7 +26,11 @@ const Navigation = () => {
                 </div>
                 <hr className="nav-hr" />
                 <div className="nav-body-section">
-                    <NavigationItem Icon={CiRead} title="Guardian List" uri="/guardian-list" />
+                    <NavigationItem
+                        Icon={CiRead}
+                        title="Protecting Wallets"
+                        uri="/protecting-wallets"
+                    />
                     <NavigationItem
                         Icon={CiRepeat}
                         title="Wallet Recovery"
@@ -53,8 +57,6 @@ const Navigation = () => {
 const NavigationItem = ({ Icon, title, uri }) => {
     const router = useRouter();
     const pathname = router.pathname;
-    console.log("uri :", uri);
-    console.log("pathname :", pathname);
 
     const classes = "nav-item" + (pathname === uri ? " nav-item-selected" : "");
 

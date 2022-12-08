@@ -1,0 +1,12 @@
+.my-guardians-table-container {
+    padding: 1rem 1rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.add-guardian-button {
+    height: 50px;
+    margin-top: auto;
+}

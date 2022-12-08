@@ -1,0 +1,38 @@
+.page-container {
+    background-color: #fff;
+    width: 520px;
+    height: 420px;
+    border-radius: 12.5px;
+    border: 1px solid #eaeaea;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-container-header {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.page-container-body {
+    flex: 1;
+}
+
+.page-container-select {
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+}
+
+.page-container-select-text {
+    color: #aaaaaa;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+.page-container-select-text-selected {
+    color: #1677ff;
+}

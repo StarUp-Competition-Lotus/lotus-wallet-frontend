@@ -24,7 +24,7 @@ const Transfer = () => {
                     prefix={<CiCoins1 size={25} color="B2B2B2" />}
                 />
             </div>
-            <Button style={{height: "50px", marginTop: "auto"}} type="primary" size="large" block>
+            <Button className="wallet-transfer-send-button" type="primary" size="large" block>
                 Send
             </Button>
         </div>
