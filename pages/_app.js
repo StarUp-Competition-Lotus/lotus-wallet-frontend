@@ -4,6 +4,7 @@ import "../styles/page-container.css";
 import "../styles/main-wallet.css";
 import "../styles/my-guardians.css";
 import "../styles/protecting-wallets.css";
+import "../styles/wallet-recovery.css";
 
 function MyApp({ Component, pageProps }) {
     return <Component {...pageProps} />;
