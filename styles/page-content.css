@@ -1,0 +1,38 @@
+.page-content {
+    background-color: #fff;
+    width: 600px;
+    height: 480px;
+    border-radius: 12.5px;
+    border: 1px solid #eaeaea;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content-header {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.page-content-body {
+    flex: 1;
+}
+
+.page-content-select {
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+}
+
+.page-content-select-text {
+    color: #aaaaaa;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+.page-content-select-text-selected {
+    color: #1677ff;
+}

@@ -1,41 +1,46 @@
-.wallet-total {
+.vault-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.vault-total {
     padding: 1.25rem 2rem 1rem;
 }
 
-.wallet-total-amount {
+.vault-total-amount {
     color: #1677ff;
     font-size: 3rem;
     margin: 5px 0;
 }
 
-.wallet-assets-header {
+.vault-assets-header {
     padding: 0.5rem 1rem;
     background-color: #F9FAFB;
     color: #3c4048;
     font-size: 12px;
 }
 
-.wallet-assets-list {
+.vault-assets-list {
     padding: 0.5rem 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.wallet-assets-token {
+.vault-assets-token {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.wallet-assets-symbol {
+.vault-assets-symbol {
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
     background-color: #F3F4F6;
 }
 
-.wallet-transfer {
+.vault-transfer {
     padding: 1.5rem 1rem;
     display: flex;
     flex-direction: column;
@@ -43,24 +48,24 @@
     height: 100%;
 }
 
-.wallet-transfer-input-area {
+.vault-transfer-input-area {
     border: 1px solid #eaeaea;
     border-radius: 10px;
     padding: 0.75rem;
 }
 
-.wallet-transfer-input {
+.vault-transfer-input {
     padding: 0;
     margin-top: 10px;
     color: #3c4048;
 }
 
-.wallet-transfer-send-button {
+.vault-transfer-send-button {
     height: 50px;
     margin-top: auto
 }
 
-.wallet-receive {
+.vault-receive {
     padding: 1.5rem 1rem;
     text-align: center;
     height: 100%;
@@ -69,3 +74,4 @@
     align-items: center;
     justify-content: space-around;
 }
+

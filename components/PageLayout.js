@@ -1,14 +1,14 @@
 import styles from "../styles/Home.module.css";
 
-import Navigation from "../components/Navigation";
+import Navigation from "./Navigation";
 
-export default function WithdrawApprovals() {
+export default function PageLayout({ children }) {
     return (
         <div className={styles.app}>
             <div className={styles.navigation}>
                 <Navigation />
             </div>
-            withdraw approvals
+            <div className={styles.body}>{children}</div>
         </div>
     );
 }

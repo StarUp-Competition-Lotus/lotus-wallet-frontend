@@ -52,7 +52,7 @@ const MyGuardiansTable = () => {
 
     return (
         <>
-            <div className="my-guardians-table-container">
+            <div className="table-container">
                 <Table
                     columns={columns}
                     dataSource={data}
@@ -62,7 +62,7 @@ const MyGuardiansTable = () => {
                 />
                 <Button
                     onClick={showModal}
-                    className="add-guardian-button"
+                    style={{ height: "50px", marginTop: "auto" }}
                     type="primary"
                     size="large"
                     block

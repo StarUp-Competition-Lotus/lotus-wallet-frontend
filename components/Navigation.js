@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
-    CiWallet,
+    CiSignpostR1,
     CiVault,
     CiUser,
     CiRead,
@@ -20,8 +20,8 @@ const Navigation = () => {
             </div>
             <div className="nav-body">
                 <div className="nav-body-section">
-                    <NavigationItem Icon={CiWallet} title="Main Wallet" uri="/" />
-                    <NavigationItem Icon={CiVault} title="Vault" uri="/vault" />
+                    <NavigationItem Icon={CiVault} title="Vault" uri="/" />
+                    <NavigationItem Icon={CiSignpostR1} title="Withdraws" uri="/withdraws" />
                     <NavigationItem Icon={CiUser} title="My Guardians" uri="/my-guardians" />
                 </div>
                 <hr className="nav-hr" />
@@ -38,8 +38,8 @@ const Navigation = () => {
                     />
                     <NavigationItem
                         Icon={CiTurnR1}
-                        title="Withdraw Approvals"
-                        uri="/withdraw-approvals"
+                        title="Withdraw Requests"
+                        uri="/withdraw-requests"
                     />
                 </div>
             </div>

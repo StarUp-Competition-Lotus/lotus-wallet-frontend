@@ -1,10 +1,10 @@
 import PageLayout from "../components/PageLayout";
-import Vault from "../components/vault";
+import Withdraws from "../components/withdraws";
 
-export default function Home() {
+export default () => {
     return (
         <PageLayout>
-            <Vault />
+            <Withdraws />
         </PageLayout>
     );
 }

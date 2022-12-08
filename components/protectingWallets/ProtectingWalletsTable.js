@@ -23,7 +23,7 @@ const data = [
 
 const ProtectingWalletsTable = () => {
     return (
-        <div className="protecting-wallets-table-container">
+        <div className="table-container">
             <Table
                 columns={columns}
                 dataSource={data}

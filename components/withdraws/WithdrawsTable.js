@@ -1,17 +1,26 @@
 import { useState } from "react";
+import { Table, Button, Modal, Input, Popconfirm, Tooltip } from "antd";
+import { CiCircleMinus } from "react-icons/ci";
 
-import { Table, Button, Modal, Popconfirm, Input } from "antd";
-import { CiCircleCheck } from "react-icons/ci";
-
+import { shortenAddress } from "../../utils";
 
 const guardiansCount = 3;
 
 const columns = [
     {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-        render: (address) => <p style={{ color: "#1777FE" }}>{address}</p>,
+        title: "To",
+        dataIndex: "to",
+        key: "to",
+        render: (to) => (
+            <Tooltip placement="topLeft" title={to}>
+                <p style={{ color: "#1777FE" }}>{shortenAddress(to)}</p>
+            </Tooltip>
+        ),
+    },
+    {
+        title: "Amount",
+        dataIndex: "amount",
+        key: "amount",
     },
     {
         title: "Approvals",
@@ -28,9 +37,9 @@ const columns = [
         dataIndex: "",
         key: "",
         render: () => (
-            <Popconfirm title="Approve this recovery?" okText="Approve" icon={null}>
+            <Popconfirm title="Cancel this request?" okText="Cancel" icon={null}>
                 <div style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>
-                    <CiCircleCheck color="#1777FE" size={30} />
+                    <CiCircleMinus color="#DC3535" size={30} />
                 </div>
             </Popconfirm>
         ),
@@ -39,17 +48,23 @@ const columns = [
 
 const data = [
     {
-        address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
+        to: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
+        amount: 0.01,
         approvals: 2,
     },
     {
-        address: "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9",
+        to: "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9",
+        amount: 0.02,
+        approvals: 0,
+    },
+    {
+        to: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
+        amount: 0.3,
         approvals: 1,
     },
 ];
 
-const WalletRecoveryTable = () => {
-
+const MyGuardiansTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -67,7 +82,6 @@ const WalletRecoveryTable = () => {
     return (
         <>
             <div className="table-container">
-
                 <Table
                     columns={columns}
                     dataSource={data}
@@ -77,27 +91,35 @@ const WalletRecoveryTable = () => {
                 <Button
                     onClick={showModal}
                     style={{ height: "50px", marginTop: "auto" }}
-
                     type="primary"
                     size="large"
                     block
                 >
-                    Start recover a wallet
+                    Create New Withdraw Request
                 </Button>
             </div>
             <Modal
-                title="Starting recover a wallet"
+                title="Creating New Withdraw Request"
                 centered
                 open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
-                okText="Recover"
+                okText="Add"
                 bodyStyle={{ margin: "1rem 0" }}
             >
-                <Input placeholder="Address" />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                    <div>
+                        <h4 style={{ marginBottom: "0.3rem" }}>To</h4>
+                        <Input placeholder="0x..." />
+                    </div>
+                    <div>
+                        <h4 style={{ marginBottom: "0.3rem" }}>Amount (ETH)</h4>
+                        <Input placeholder="0.0001" />
+                    </div>
+                </div>
             </Modal>
         </>
     );
 };
 
-export default WalletRecoveryTable;
+export default MyGuardiansTable;

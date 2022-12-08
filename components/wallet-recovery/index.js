@@ -1,4 +1,4 @@
-import PageContainer from "../PageContainer";
+import PageContent from "../PageContent";
 import WalletRecoveryTable from "./WalletRecoveryTable";
 
 const WalletRecovery = () => {

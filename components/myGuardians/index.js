@@ -1,4 +1,4 @@
-import PageContainer from "../PageContainer";
+import PageContent from "../PageContent";
 import MyGuardiansTable from "./MyGuardiansTable";
 
 const MyGuardians = () => {
@@ -9,7 +9,7 @@ const MyGuardians = () => {
         },
     ];
 
-    return <PageContainer title="My Guardians" contentList={contentList} />;
+    return <PageContent title="My Guardians" contentList={contentList} />;
 };
 
 export default MyGuardians;
