@@ -28,7 +28,7 @@ const ProtectingWalletsTable = () => {
                 columns={columns}
                 dataSource={data}
                 showHeader={false}
-                pagination={{ hideOnSinglePage: true }}
+                pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
                 bordered={true}
             />
         </div>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Table, Button, Modal, Popconfirm, Input } from "antd";
 import { CiCircleCheck } from "react-icons/ci";
 
+
 const guardiansCount = 3;
 
 const columns = [
@@ -48,6 +49,7 @@ const data = [
 ];
 
 const WalletRecoveryTable = () => {
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -65,6 +67,7 @@ const WalletRecoveryTable = () => {
     return (
         <>
             <div className="table-container">
+
                 <Table
                     columns={columns}
                     dataSource={data}
@@ -74,6 +77,7 @@ const WalletRecoveryTable = () => {
                 <Button
                     onClick={showModal}
                     style={{ height: "50px", marginTop: "auto" }}
+
                     type="primary"
                     size="large"
                     block

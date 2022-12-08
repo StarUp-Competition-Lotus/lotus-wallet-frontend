@@ -9,7 +9,7 @@ const WalletRecovery = () => {
         },
     ];
 
-    return <PageContent title="Wallet Recovery" contentList={contentList} />;
+    return <PageContainer title="Wallet Recovery" contentList={contentList} />;
 };
 
 export default WalletRecovery;

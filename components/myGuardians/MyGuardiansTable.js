@@ -14,7 +14,7 @@ const columns = [
         dataIndex: "",
         key: "",
         render: () => (
-            <Popconfirm title="Delete this guardian?" okText="Delete">
+            <Popconfirm title="Delete this guardian?" okText="Delete" icon={null}>
                 <div style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>
                     <CiCircleRemove color="#DC3535" size={30} />
                 </div>
@@ -57,7 +57,7 @@ const MyGuardiansTable = () => {
                     columns={columns}
                     dataSource={data}
                     showHeader={false}
-                    pagination={{ hideOnSinglePage: true }}
+                    pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
                     bordered={true}
                 />
                 <Button
