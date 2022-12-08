@@ -1,14 +1,10 @@
-import styles from "../styles/Home.module.css";
+import PageLayout from "../components/PageLayout";
+import WalletRecovery from "../components/wallet-recovery";
 
-import Navigation from "../components/Navigation";
-
-export default function WalletRecovery() {
+export default function Home() {
     return (
-        <div className={styles.app}>
-            <div className={styles.navigation}>
-                <Navigation />
-            </div>
-            wallet recovery
-        </div>
+        <PageLayout>
+            <WalletRecovery />
+        </PageLayout>
     );
 }

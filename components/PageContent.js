@@ -1,22 +1,22 @@
 import { useState } from "react";
 
-const PageContainer = ({ title, contentList }) => {
+const PageContent = ({ title, contentList }) => {
     const [sectionDisplayed, setSectionDisplayed] = useState(contentList[0].section);
 
     return (
-        <div className="page-container">
-            <div className="page-container-header">
+        <div className="page-content">
+            <div className="page-content-header">
                 <h2>{title}</h2>
-                <div className="page-container-select">
+                <div className="page-content-select">
                     {contentList.length == 1
                         ? null
                         : contentList.map((content) => {
                               return (
                                   <p
                                       className={
-                                          "page-container-select-text" +
+                                          "page-content-select-text" +
                                           (sectionDisplayed === content.section
-                                              ? " page-container-select-text-selected"
+                                              ? " page-content-select-text-selected"
                                               : "")
                                       }
                                       onClick={() => {
@@ -29,7 +29,7 @@ const PageContainer = ({ title, contentList }) => {
                           })}
                 </div>
             </div>
-            <div className="page-container-body">
+            <div className="page-content-body">
                 {
                     contentList.filter((content) => {
                         return content.section === sectionDisplayed;
@@ -40,4 +40,4 @@ const PageContainer = ({ title, contentList }) => {
     );
 };
 
-export default PageContainer;
+export default PageContent;

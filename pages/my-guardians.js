@@ -1,17 +1,10 @@
-import styles from "../styles/Home.module.css";
-
-import Navigation from "../components/Navigation";
+import PageLayout from "../components/PageLayout";
 import MyGuardians from "../components/myGuardians";
 
-export default () => {
+export default function Home() {
     return (
-        <div className={styles.app}>
-            <div className={styles.navigation}>
-                <Navigation />
-            </div>
-            <div className={styles.body}>
-                <MyGuardians />
-            </div>
-        </div>
+        <PageLayout>
+            <MyGuardians />
+        </PageLayout>
     );
 }

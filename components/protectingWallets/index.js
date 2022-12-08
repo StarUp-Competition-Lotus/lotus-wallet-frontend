@@ -1,4 +1,4 @@
-import PageContainer from "../PageContainer";
+import PageContent from "../PageContent";
 import ProtectingWalletsTable from "./ProtectingWalletsTable";
 
 const ProtectingWallets = () => {
@@ -9,7 +9,7 @@ const ProtectingWallets = () => {
         },
     ];
 
-    return <PageContainer title="Protecting Wallets" contentList={contentList} />;
+    return <PageContent title="Protecting Wallets" contentList={contentList} />;
 };
 
 export default ProtectingWallets;

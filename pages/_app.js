@@ -1,9 +1,8 @@
 import "../styles/globals.css";
 import "../styles/navigation.css";
-import "../styles/page-container.css";
-import "../styles/main-wallet.css";
-import "../styles/my-guardians.css";
-import "../styles/protecting-wallets.css";
+import "../styles/page-content.css";
+import "../styles/vault.css";
+
 
 function MyApp({ Component, pageProps }) {
     return <Component {...pageProps} />;

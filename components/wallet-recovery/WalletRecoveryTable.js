@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Table, Button, Modal, Input, Popconfirm } from "antd";
-import { CiCircleRemove } from "react-icons/ci";
+
+import { Table, Button, Modal, Popconfirm, Input } from "antd";
+import { CiCircleCheck } from "react-icons/ci";
+
+const guardiansCount = 3;
 
 const columns = [
     {
@@ -10,13 +13,23 @@ const columns = [
         render: (address) => <p style={{ color: "#1777FE" }}>{address}</p>,
     },
     {
-        title: "Remove",
+        title: "Approvals",
+        dataIndex: "approvals",
+        key: "approvals",
+        render: (approvals) => (
+            <p style={{ color: "#3c4048" }}>
+                {approvals}/{guardiansCount}
+            </p>
+        ),
+    },
+    {
+        title: "",
         dataIndex: "",
         key: "",
         render: () => (
-            <Popconfirm title="Delete this guardian?" okText="Delete">
+            <Popconfirm title="Approve this recovery?" okText="Approve" icon={null}>
                 <div style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>
-                    <CiCircleRemove color="#DC3535" size={30} />
+                    <CiCircleCheck color="#1777FE" size={30} />
                 </div>
             </Popconfirm>
         ),
@@ -26,16 +39,15 @@ const columns = [
 const data = [
     {
         address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
+        approvals: 2,
     },
     {
         address: "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9",
-    },
-    {
-        address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
+        approvals: 1,
     },
 ];
 
-const MyGuardiansTable = () => {
+const WalletRecoveryTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -56,8 +68,7 @@ const MyGuardiansTable = () => {
                 <Table
                     columns={columns}
                     dataSource={data}
-                    showHeader={false}
-                    pagination={{ hideOnSinglePage: true }}
+                    pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
                     bordered={true}
                 />
                 <Button
@@ -67,16 +78,16 @@ const MyGuardiansTable = () => {
                     size="large"
                     block
                 >
-                    Add Guardians
+                    Start recover a wallet
                 </Button>
             </div>
             <Modal
-                title="Adding Guardians"
+                title="Starting recover a wallet"
                 centered
                 open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
-                okText="Add"
+                okText="Recover"
                 bodyStyle={{ margin: "1rem 0" }}
             >
                 <Input placeholder="Address" />
@@ -85,4 +96,4 @@ const MyGuardiansTable = () => {
     );
 };
 
-export default MyGuardiansTable;
+export default WalletRecoveryTable;
