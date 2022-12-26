@@ -1,7 +1,8 @@
 import PageLayout from "../components/PageLayout";
 import Vault from "../components/vault";
 
-export default function Home() {
+export default () => {
+
     return (
         <PageLayout>
             <Vault />

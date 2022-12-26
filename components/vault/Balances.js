@@ -1,15 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import * as ethers from "ethers";
+import { Button, Modal, QRCode } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
-import { Button, Modal } from "antd";
+import { provider } from "../../constants/main";
+import useWalletContract from "../../hooks/useWalletContract";
 
 const Balances = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [balance, setBalance] = useState();
+
+    const walletContract = useWalletContract();
+
+    useEffect(() => {
+        const getBalance = async () => {
+            const balance = await provider.getBalance(walletContract.address);
+            setBalance(ethers.utils.formatEther(balance));
+        };
+        getBalance();
+    }, []);
 
     const showModal = () => {
         setIsModalOpen(true);
     };
 
-    const handleOk = () => {
+    const handleCopyAddress = () => {
+        navigator.clipboard.writeText(walletContract.address);
         setIsModalOpen(false);
     };
 
@@ -22,7 +38,13 @@ const Balances = () => {
             <div className="vault-container">
                 <div className="vault-total">
                     <p style={{ color: "#aaaaaa" }}>Total: </p>
-                    <h2 className="vault-total-amount">$100.00</h2>
+                    {balance ? (
+                        <h2 className="vault-total-amount">${parseFloat(balance).toFixed(3)}</h2>
+                    ) : (
+                        <LoadingOutlined
+                            style={{ color: "#1777FE", fontSize: "3rem", margin: "5px 0" }}
+                        />
+                    )}
                 </div>
                 <div className="vault-assets">
                     <div className="vault-assets-header">
@@ -34,7 +56,13 @@ const Balances = () => {
                         <Token name="LINK" amount="0.00" />
                     </div>
                     <div style={{ padding: "1rem 1rem" }}>
-                        <Button style={{height: "50px"}} onClick={showModal} type="primary" size="large" block>
+                        <Button
+                            style={{ height: "50px" }}
+                            onClick={showModal}
+                            type="primary"
+                            size="large"
+                            block
+                        >
                             Add Funds
                         </Button>
                     </div>
@@ -44,16 +72,16 @@ const Balances = () => {
                 title="Adding Funds"
                 centered
                 open={isModalOpen}
-                onOk={handleOk}
+                onOk={handleCopyAddress}
                 onCancel={handleCancel}
                 okText="Copy"
                 // bodyStyle={{ margin: "1rem 0" }}
             >
                 <div className="vault-receive">
                     <h4 style={{ color: "#3c4048", fontSize: "1.25rem" }}>My QR Code</h4>
-                    <img src="/QR-code.png" style={{ width: "125px", height: "125px" }} />
+                    <QRCode value={walletContract.address} />
                     <p style={{ color: "#3c4048" }}>Wallet address</p>
-                    <p style={{ color: "#aaaaaa" }}>0x5fcf81463a2a63c10f51c4f9d55fb7403759c8b9</p>
+                    <p style={{ color: "#aaaaaa" }}>{walletContract.address}</p>
                 </div>
             </Modal>
         </>
