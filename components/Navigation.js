@@ -10,10 +10,25 @@ import {
     CiFileOn,
     CiLogin,
 } from "react-icons/ci";
+import { message } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { shortenAddress } from "../utils/utils";
+import useWalletContract from "../hooks/useWalletContract";
 
 const Navigation = () => {
+    const [messageApi, contextHolder] = message.useMessage();
+    const { walletAddr } = useWalletContract();
+
+    const handleCopyAddress = () => {
+        navigator.clipboard.writeText(walletAddr);
+        messageApi.open({
+            type: "success",
+            content: "Copied to clipboard",
+        });
+    };
     return (
         <>
+            {contextHolder}
             <div className="nav-header">
                 <img src="/logo.png" className="nav-logo" />
                 <h1>Lotus</h1>
@@ -44,9 +59,11 @@ const Navigation = () => {
                 </div>
             </div>
             <div className="nav-footer">
-                <p className="nav-text nav-address">0x5fcf8146...59c8b9</p>
+                <p className="nav-text nav-address">
+                    {walletAddr ? shortenAddress(walletAddr) : <LoadingOutlined />}
+                </p>
                 <div className="nav-footer-icon">
-                    <CiFileOn size={20} color="#B2B2B2" />
+                    <CiFileOn size={20} color="#B2B2B2" onClick={handleCopyAddress} />
                     <CiLogin size={20} color="#B2B2B2" />
                 </div>
             </div>

@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Table, Button, Modal, Input, Popconfirm } from "antd";
 import { CiCircleRemove } from "react-icons/ci";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+
+import useWalletContract from "../../hooks/useWalletContract";
+import useNotification from "../../hooks/useNotification";
+import { executeAAWalletTransaction } from "../../utils/aa";
 
 const columns = [
     {
@@ -37,21 +42,45 @@ const data = [
 
 const MyGuardiansTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newGuardianInput, setNewGuardianInput] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const { walletAddr, signingKey, walletContract } = useWalletContract();
+    const { raiseSuccess, raiseFailure, notificationContextHolder } = useNotification();
 
     const showModal = () => {
         setIsModalOpen(true);
-    };
-
-    const handleOk = () => {
-        setIsModalOpen(false);
     };
 
     const handleCancel = () => {
         setIsModalOpen(false);
     };
 
+    const addGuardian = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const tx = await walletContract.populateTransaction.addGuardian(newGuardianInput);
+            await executeAAWalletTransaction(walletAddr, signingKey, tx);
+            raiseSuccess("Guardian added successfully");
+        } catch (e) {
+            console.log("error: ", e);
+            raiseFailure("Error adding guardian");
+        }
+        setIsLoading(false);
+        setIsModalOpen(false);
+        setNewGuardianInput("");
+    }, [newGuardianInput]);
+
+    useEffect(() => {
+        walletContract.on("GuardianAdded", (walletAddr, guardian) => {
+            console.log(walletAddr);
+            console.log(guardian);
+        });
+    }, []);
+
     return (
         <>
+            {notificationContextHolder}
             <div className="table-container">
                 <Table
                     columns={columns}
@@ -74,12 +103,26 @@ const MyGuardiansTable = () => {
                 title="Adding Guardians"
                 centered
                 open={isModalOpen}
-                onOk={handleOk}
+                onOk={addGuardian}
                 onCancel={handleCancel}
                 okText="Add"
                 bodyStyle={{ margin: "1rem 0" }}
+                footer={[
+                    <Button key="back" onClick={handleCancel}>
+                        Cancel
+                    </Button>,
+                    <Button key="submit" type="primary" loading={isLoading} onClick={addGuardian}>
+                        Add
+                    </Button>,
+                ]}
             >
-                <Input placeholder="Address" />
+                <Input
+                    placeholder="Address"
+                    value={newGuardianInput}
+                    onChange={(e) => {
+                        setNewGuardianInput(e.target.value);
+                    }}
+                />
             </Modal>
         </>
     );
