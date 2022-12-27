@@ -36,7 +36,7 @@ const Navigation = () => {
             <div className="nav-body">
                 <div className="nav-body-section">
                     <NavigationItem Icon={CiVault} title="Vault" uri="/" />
-                    <NavigationItem Icon={CiSignpostR1} title="Withdraws" uri="/withdraws" />
+                    <NavigationItem Icon={CiSignpostR1} title="My Withdraws" uri="/my-withdraws" />
                     <NavigationItem Icon={CiUser} title="My Guardians" uri="/my-guardians" />
                 </div>
                 <hr className="nav-hr" />

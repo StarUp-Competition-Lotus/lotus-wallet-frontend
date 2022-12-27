@@ -1,19 +1,17 @@
 import { useState } from "react";
-import { Table, Button, Modal, Input, Popconfirm, Tooltip } from "antd";
-import { CiCircleMinus } from "react-icons/ci";
+import { Table, Button, Modal, Input, Popconfirm, Tooltip, Dropdown } from "antd";
+import { CiCircleMinus, CiCircleCheck, CiNoWaitingSign, CiCircleChevRight } from "react-icons/ci";
 
-import { shortenAddress } from "../../utils";
-
-const guardiansCount = 3;
+import { shortenAddress } from "../../utils/utils";
 
 const columns = [
     {
-        title: "To",
-        dataIndex: "to",
-        key: "to",
-        render: (to) => (
-            <Tooltip placement="topLeft" title={to}>
-                <p style={{ color: "#1777FE" }}>{shortenAddress(to)}</p>
+        title: "Receiver",
+        dataIndex: "receiver",
+        key: "receiver",
+        render: (receiver) => (
+            <Tooltip placement="topLeft" title={receiver}>
+                <p style={{ color: "#1777FE" }}>{shortenAddress(receiver)}</p>
             </Tooltip>
         ),
     },
@@ -24,45 +22,105 @@ const columns = [
     },
     {
         title: "Approvals",
-        dataIndex: "approvals",
-        key: "approvals",
-        render: (approvals) => (
-            <p style={{ color: "#3c4048" }}>
-                {approvals}/{guardiansCount}
-            </p>
-        ),
+        dataIndex: "guardianApprovals",
+        key: "guardianApprovals",
+        render: (guardianApprovals) => {
+            const guardiansNum = Object.keys(guardianApprovals).length;
+            const { dropdownItems, approvedNum } = guardianApprovalsDataHandle(guardianApprovals);
+            return (
+                <Dropdown menu={{ items: dropdownItems }} placement="bottomLeft">
+                    <p style={{ color: "#3c4048" }}>
+                        {approvedNum}/{guardiansNum}
+                    </p>
+                </Dropdown>
+            );
+        },
     },
     {
-        title: "",
+        title: <p style={{ textAlign: "center" }}>Cancel</p>,
         dataIndex: "",
         key: "",
         render: () => (
-            <Popconfirm title="Cancel this request?" okText="Cancel" icon={null}>
+            <Popconfirm title="Cancel this request?" cancelText="No" okText="Yes" icon={null}>
                 <div style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>
                     <CiCircleMinus color="#DC3535" size={30} />
                 </div>
             </Popconfirm>
         ),
     },
+    {
+        title: <p style={{ textAlign: "center" }}>Execute</p>,
+        dataIndex: "guardianApprovals",
+        key: "guardianApprovals",
+        render: (guardianApprovals) => {
+            const guardiansNum = Object.keys(guardianApprovals).length;
+            const { approvedNum } = guardianApprovalsDataHandle(guardianApprovals);
+            return approvedNum === guardiansNum ? (
+                <Popconfirm title="Execute this request?" cancelText="No" okText="Yes" icon={null}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignContent: "center",
+                        }}
+                    >
+                        <CiCircleChevRight color="#54B435" size={30} />
+                    </div>
+                </Popconfirm>
+            ) : null;
+        },
+    },
 ];
 
 const data = [
     {
-        to: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
+        receiver: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
         amount: 0.01,
-        approvals: 2,
+        guardianApprovals: {
+            "0x8335c2DE1Bb6d606C183D933C92c69BD363DC794": true,
+            "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9": true,
+        },
     },
     {
-        to: "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9",
+        receiver: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
         amount: 0.02,
-        approvals: 0,
+        guardianApprovals: {
+            "0x8335c2DE1Bb6d606C183D933C92c69BD363DC794": false,
+            "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9": true,
+        },
     },
     {
-        to: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
+        receiver: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
         amount: 0.3,
-        approvals: 1,
+        guardianApprovals: {
+            "0x8335c2DE1Bb6d606C183D933C92c69BD363DC794": false,
+            "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9": true,
+            "0xb607A500574fE29afb0d0681f1dC3E82f79f4877": true,
+        },
     },
 ];
+
+const guardianApprovalsDataHandle = (guardiansApprovals) => {
+    const dropdownItems = [];
+    let approvedNum = 0;
+    for (const guardian in guardiansApprovals) {
+        const Icon = guardiansApprovals[guardian] ? <CiCircleCheck /> : <CiNoWaitingSign />;
+        const display = (
+            <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
+                {Icon}
+                <p>{shortenAddress(guardian)}</p>
+            </div>
+        );
+        dropdownItems.push({
+            key: guardian,
+            label: display,
+        });
+        if (guardiansApprovals[guardian]) {
+            approvedNum++;
+        }
+    }
+    return { dropdownItems, approvedNum };
+};
 
 const MyGuardiansTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -109,7 +167,7 @@ const MyGuardiansTable = () => {
             >
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                     <div>
-                        <h4 style={{ marginBottom: "0.3rem" }}>To</h4>
+                        <h4 style={{ marginBottom: "0.3rem" }}>Receiver</h4>
                         <Input placeholder="0x..." />
                     </div>
                     <div>
