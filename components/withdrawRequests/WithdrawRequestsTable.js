@@ -1,7 +1,7 @@
 import { Table, Popconfirm, Tooltip } from "antd";
 import { CiCircleCheck } from "react-icons/ci";
 
-import { shortenAddress } from "../../utils";
+import { shortenAddress } from "../../utils/utils";
 
 const guardiansCount = 3;
 

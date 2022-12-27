@@ -1,20 +1,22 @@
 import { useState, useEffect } from "react";
 import * as ethers from "ethers";
-import { Button, Modal, QRCode } from "antd";
+import { Button, Modal, QRCode, message } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 import { provider } from "../../constants/main";
 import useWalletContract from "../../hooks/useWalletContract";
+import { roundedNumber } from "../../utils/utils";
 
 const Balances = () => {
+    const [messageApi, contextHolder] = message.useMessage();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [balance, setBalance] = useState();
 
-    const walletContract = useWalletContract();
+    const { walletAddr } = useWalletContract();
 
     useEffect(() => {
         const getBalance = async () => {
-            const balance = await provider.getBalance(walletContract.address);
+            const balance = await provider.getBalance(walletAddr);
             setBalance(ethers.utils.formatEther(balance));
         };
         getBalance();
@@ -25,7 +27,11 @@ const Balances = () => {
     };
 
     const handleCopyAddress = () => {
-        navigator.clipboard.writeText(walletContract.address);
+        navigator.clipboard.writeText(walletAddr);
+        messageApi.open({
+            type: "success",
+            content: "Copied to clipboard",
+        });
         setIsModalOpen(false);
     };
 
@@ -35,11 +41,14 @@ const Balances = () => {
 
     return (
         <>
+            {contextHolder}
             <div className="vault-container">
                 <div className="vault-total">
                     <p style={{ color: "#aaaaaa" }}>Total: </p>
                     {balance ? (
-                        <h2 className="vault-total-amount">${parseFloat(balance).toFixed(3)}</h2>
+                        <h2 className="vault-total-amount">
+                            ${roundedNumber(parseFloat(balance))}
+                        </h2>
                     ) : (
                         <LoadingOutlined
                             style={{ color: "#1777FE", fontSize: "3rem", margin: "5px 0" }}
@@ -79,9 +88,9 @@ const Balances = () => {
             >
                 <div className="vault-receive">
                     <h4 style={{ color: "#3c4048", fontSize: "1.25rem" }}>My QR Code</h4>
-                    <QRCode value={walletContract.address} />
+                    <QRCode value={walletAddr} />
                     <p style={{ color: "#3c4048" }}>Wallet address</p>
-                    <p style={{ color: "#aaaaaa" }}>{walletContract.address}</p>
+                    <p style={{ color: "#aaaaaa" }}>{walletAddr}</p>
                 </div>
             </Modal>
         </>
