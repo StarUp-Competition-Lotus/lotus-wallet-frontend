@@ -5,6 +5,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 
 import { provider } from "../../constants/main";
 import useWalletContract from "../../hooks/useWalletContract";
+import { roundedNumber } from "../../utils/utils";
 
 const Balances = () => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -45,7 +46,9 @@ const Balances = () => {
                 <div className="vault-total">
                     <p style={{ color: "#aaaaaa" }}>Total: </p>
                     {balance ? (
-                        <h2 className="vault-total-amount">${parseFloat(balance).toFixed(3)}</h2>
+                        <h2 className="vault-total-amount">
+                            ${roundedNumber(parseFloat(balance))}
+                        </h2>
                     ) : (
                         <LoadingOutlined
                             style={{ color: "#1777FE", fontSize: "3rem", margin: "5px 0" }}
