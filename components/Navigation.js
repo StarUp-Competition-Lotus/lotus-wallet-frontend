@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Popconfirm } from "antd";
 import { useRouter } from "next/router";
 import {
     CiSignpostR1,
@@ -12,12 +13,15 @@ import {
 } from "react-icons/ci";
 import { message } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+
 import { shortenAddress } from "../utils/utils";
 import useWalletContract from "../hooks/useWalletContract";
+import useLogout from "../hooks/useLogout";
 
 const Navigation = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const { walletAddr } = useWalletContract();
+    const { logout } = useLogout();
 
     const handleCopyAddress = () => {
         navigator.clipboard.writeText(walletAddr);
@@ -64,7 +68,9 @@ const Navigation = () => {
                 </p>
                 <div className="nav-footer-icon">
                     <CiFileOn size={20} color="#B2B2B2" onClick={handleCopyAddress} />
-                    <CiLogin size={20} color="#B2B2B2" />
+                    <Popconfirm title="Logout?" okText="Yes" icon={null} onConfirm={logout}>
+                        <CiLogin size={20} color="#B2B2B2" />
+                    </Popconfirm>
                 </div>
             </div>
         </>
