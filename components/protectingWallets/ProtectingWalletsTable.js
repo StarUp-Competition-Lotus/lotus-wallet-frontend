@@ -6,19 +6,24 @@ import { Table } from "antd";
 import useWalletContract from "../../hooks/useWalletContract";
 
 const ProtectingWalletsTable = () => {
-    const [protectingWallets, setprotectingWallets] = useState([])
+    const [protectingWallets, setProtectingWallets] = useState([])
     const [isTableLoading, setIsTableLoading] = useState(false)
     const { walletAddr } = useWalletContract();
 
     const getProtectingData = async () => {
         setIsTableLoading(true)
+        let addresses = []
+
         const querySnapshot = await getDocs(collection(firestoreDb, "wallets"));
         querySnapshot.forEach((doc) => {
             doc.data().guardians.forEach((subDoc) => {
                 if (subDoc === walletAddr && !protectingWallets.includes(doc.id)) {
-                    setprotectingWallets(protectingWallets.concat([doc.id]))
+                    addresses.push(doc.id)
                 }
             })
+            if (addresses.length != 0) {
+                setProtectingWallets(protectingWallets.concat(addresses))
+            }
         });
         setIsTableLoading(false)
     }
