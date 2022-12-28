@@ -1,0 +1,21 @@
+.welcome-screen {
+    background-color: #f3f4f6;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.welcome-logo {
+    height: 100px;
+    width: 100px;
+}
+
+.welcome-action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    marginTop: 2rem;
+}
