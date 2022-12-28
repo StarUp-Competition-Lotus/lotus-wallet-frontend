@@ -7,7 +7,7 @@ import "../styles/vault.css";
 function MyApp({ Component, pageProps }) {
     return (
         <WalletContextProvider>
-            <Component {...pageProps} />;
+            <Component {...pageProps} />
         </WalletContextProvider>
     );
 }
