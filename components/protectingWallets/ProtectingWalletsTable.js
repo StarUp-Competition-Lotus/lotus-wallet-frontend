@@ -1,35 +1,58 @@
+import { useState, useEffect, useMemo } from 'react'
+import { getDocs, collection } from "firebase/firestore";
+import firestoreDb from "../../firebase";
 import { Table } from "antd";
 
-const columns = [
-    {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-        render: (address) => <p style={{ color: "#1777FE" }}>{address}</p>,
-    },
-];
-
-const data = [
-    {
-        address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
-    },
-    {
-        address: "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9",
-    },
-    {
-        address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
-    },
-];
+import useWalletContract from "../../hooks/useWalletContract";
 
 const ProtectingWalletsTable = () => {
+    const [protectingWallets, setprotectingWallets] = useState([])
+    const [isTableLoading, setIsTableLoading] = useState(false)
+    const { walletAddr } = useWalletContract();
+
+    const getProtectingData = async () => {
+        setIsTableLoading(true)
+        const querySnapshot = await getDocs(collection(firestoreDb, "wallets"));
+        querySnapshot.forEach((doc) => {
+            doc.data().guardians.forEach((subDoc) => {
+                if (subDoc === walletAddr && !protectingWallets.includes(doc.id)) {
+                    setprotectingWallets(protectingWallets.concat([doc.id]))
+                }
+            })
+        });
+        setIsTableLoading(false)
+    }
+
+    useEffect(() => {
+        getProtectingData()
+    }, [protectingWallets])
+
+    const protectingGuardiansColumns = [
+        {
+            title: "Address",
+            dataIndex: "address",
+            key: "address",
+            render: (address) => <p style={{ color: "#1777FE" }}>{address}</p>,
+        },
+    ]
+    
+    const protectingGuardiansData = useMemo(() => {
+        return protectingWallets.map(wallet => {
+            return {
+                address: wallet,
+            }
+        }) 
+    }, [protectingWallets])
+
     return (
         <div className="table-container">
             <Table
-                columns={columns}
-                dataSource={data}
+                columns={protectingGuardiansColumns}
+                dataSource={protectingGuardiansData}
                 showHeader={false}
                 pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
                 bordered={true}
+                loading={isTableLoading}
             />
         </div>
     );
