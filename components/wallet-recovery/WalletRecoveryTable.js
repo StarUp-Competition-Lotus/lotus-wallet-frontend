@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Table, Button, Modal, Popconfirm, Input, Empty } from "antd";
 import { CiCircleCheck } from "react-icons/ci";
 
+import useWalletRecovery from "../../hooks/useWalletRecovery";
+
 const guardiansCount = 3;
 
 const columns = [
@@ -50,6 +52,15 @@ const data = [
 const WalletRecoveryTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const {
+        newSigningAddrInput,
+        setRecoverWalletInput,
+        setNewSigningAddrInput,
+        initiateRecovery,
+        notificationContextHolder,
+        isTransacting,
+    } = useWalletRecovery();
+
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -64,6 +75,7 @@ const WalletRecoveryTable = () => {
 
     return (
         <>
+            {notificationContextHolder}
             <div className="table-container">
                 {data.length === 0 ? (
                     <Empty description="No Wallet Recovery request that needs your support at the moment" />
@@ -97,8 +109,31 @@ const WalletRecoveryTable = () => {
                 onCancel={handleCancel}
                 okText="Recover"
                 bodyStyle={{ margin: "1rem 0" }}
+                footer={[
+                    <Button onClick={handleCancel}>Cancel</Button>,
+                    <Button type="primary" loading={isTransacting} onClick={initiateRecovery}>
+                        Recover
+                    </Button>,
+                ]}
             >
-                <Input placeholder="Address" />
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                    <div>
+                        <h4 style={{ marginBottom: "0.3rem" }}>Wallet Address to recover</h4>
+                        <Input
+                            onChange={(e) => {
+                                setRecoverWalletInput(e.target.value);
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <h4 style={{ marginBottom: "0.3rem" }}>Recovery code</h4>
+                        <Input
+                            onChange={(e) => {
+                                setNewSigningAddrInput(e.target.value);
+                            }}
+                        />
+                    </div>
+                </div>
             </Modal>
         </>
     );

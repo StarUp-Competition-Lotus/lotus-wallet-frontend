@@ -10,5 +10,11 @@ export default () => {
     const signingAccount = signingKey ? new Wallet(signingKey).connect(provider) : null;
     const walletContract =
         walletAddr && signingAccount ? new Contract(walletAddr, WALLET_ABI, signingAccount) : null;
-    return { walletContract, walletAddr, signingKey };
+    const getWalletContract = (walletAddressParam) => {
+        const walletContract = signingAccount
+            ? new Contract(walletAddressParam, WALLET_ABI, signingAccount)
+            : null;
+        return walletContract;
+    };
+    return { walletContract, walletAddr, signingKey, getWalletContract };
 };
