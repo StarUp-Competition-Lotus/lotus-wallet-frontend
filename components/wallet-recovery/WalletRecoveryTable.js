@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Table, Button, Modal, Popconfirm, Input } from "antd";
+import { Table, Button, Modal, Popconfirm, Input, Empty } from "antd";
 import { CiCircleCheck } from "react-icons/ci";
 
 const guardiansCount = 3;
@@ -48,7 +48,6 @@ const data = [
 ];
 
 const WalletRecoveryTable = () => {
-
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -66,17 +65,23 @@ const WalletRecoveryTable = () => {
     return (
         <>
             <div className="table-container">
-
-                <Table
-                    columns={columns}
-                    dataSource={data}
-                    pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
-                    bordered={true}
-                />
+                {data.length === 0 ? (
+                    <Empty description="No Wallet Recovery request that needs your support at the moment" />
+                ) : (
+                    <Table
+                        columns={columns}
+                        dataSource={data}
+                        pagination={{
+                            hideOnSinglePage: true,
+                            pageSize: 3,
+                            position: ["bottomCenter"],
+                        }}
+                        bordered={true}
+                    />
+                )}
                 <Button
                     onClick={showModal}
                     style={{ height: "50px", marginTop: "auto" }}
-
                     type="primary"
                     size="large"
                     block

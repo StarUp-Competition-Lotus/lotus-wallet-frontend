@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { getDocs, collection } from "firebase/firestore";
 import firestoreDb from "../../firebase";
-import { Table } from "antd";
+import { Table, Empty } from "antd";
 
 import useWalletContract from "../../hooks/useWalletContract";
 
@@ -51,14 +51,14 @@ const ProtectingWalletsTable = () => {
 
     return (
         <div className="table-container">
-            <Table
+            {protectingGuardiansData.length === 0 ? <Empty description="You are not the guardian of any wallets" /> : <Table
                 columns={protectingGuardiansColumns}
                 dataSource={protectingGuardiansData}
                 showHeader={false}
                 pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
                 bordered={true}
                 loading={isTableLoading}
-            />
+            />}
         </div>
     );
 };

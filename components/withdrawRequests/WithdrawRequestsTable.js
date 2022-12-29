@@ -1,4 +1,4 @@
-import { Table, Popconfirm, Tooltip } from "antd";
+import { Table, Popconfirm, Tooltip, Empty } from "antd";
 import { CiCircleCheck } from "react-icons/ci";
 
 import { shortenAddress } from "../../utils/utils";
@@ -66,12 +66,16 @@ const data = [
 const WalletRecoveryTable = () => {
     return (
         <div className="table-container">
-            <Table
-                columns={columns}
-                dataSource={data}
-                pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
-                bordered={true}
-            />
+            {data.length === 0 ? (
+                <Empty description="You don't make any Withdraw Request at the moment" />
+            ) : (
+                <Table
+                    columns={columns}
+                    dataSource={data}
+                    pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
+                    bordered={true}
+                />
+            )}
         </div>
     );
 };

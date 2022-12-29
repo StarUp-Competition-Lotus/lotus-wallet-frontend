@@ -18,7 +18,13 @@ export default () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [inputSK, setInputSK] = useState("");
 
-    const { importSecretKey, isImportingSK, notificationContextHolder } = useWelcome();
+    const {
+        createNewWallet,
+        importSecretKey,
+        isImportingSK,
+        notificationContextHolder,
+        isCreatingWallet,
+    } = useWelcome();
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -39,12 +45,22 @@ export default () => {
                 </div>
                 <div className="welcome-action-buttons">
                     <ActionButton
+                        disabled={isCreatingWallet}
+                        loading={isCreatingWallet}
                         icon={<CiWallet />}
                         title="Create a new Wallet"
+                        action={createNewWallet}
+                    />
+                    <ActionButton
+                        disabled={isCreatingWallet}
+                        loading={false}
+                        icon={<CiRepeat />}
+                        title="Recover a Wallet"
                         action={() => {}}
                     />
-                    <ActionButton icon={<CiRepeat />} title="Recover a Wallet" action={() => {}} />
                     <ActionButton
+                        disabled={isCreatingWallet}
+                        loading={false}
                         icon={<CiImport />}
                         title="Import wallet secret key"
                         action={showModal}
@@ -86,9 +102,9 @@ export default () => {
     );
 };
 
-const ActionButton = ({ icon, title, action }) => {
+const ActionButton = ({ icon, title, action, disabled, loading }) => {
     return (
-        <Button size="large" onClick={action}>
+        <Button loading={loading} disabled={disabled} size="large" onClick={action}>
             <div
                 style={{
                     display: "flex",
@@ -97,8 +113,12 @@ const ActionButton = ({ icon, title, action }) => {
                     gap: "0.5rem",
                 }}
             >
-                {icon}
-                <p>{title}</p>
+                {!loading && (
+                    <>
+                        {icon}
+                        <p>{title}</p>
+                    </>
+                )}
             </div>
         </Button>
     );

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Table, Button, Modal, Input, Popconfirm } from "antd";
+import { Table, Button, Modal, Input, Popconfirm, Empty } from "antd";
 import { CiCircleRemove } from "react-icons/ci";
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import firestoreDb from "../../firebase";
@@ -135,14 +135,22 @@ const MyGuardiansTable = () => {
         <>
             {notificationContextHolder}
             <div className="table-container">
-                <Table
-                    columns={tableColumns}
-                    dataSource={guardiansData}
-                    showHeader={false}
-                    pagination={{ hideOnSinglePage: true, pageSize: 4, position: ["bottomCenter"] }}
-                    bordered={true}
-                    loading={isTableLoading}
-                />
+                {guardiansData.length === 0 ? (
+                    <Empty description="No Guardians" />
+                ) : (
+                    <Table
+                        columns={tableColumns}
+                        dataSource={guardiansData}
+                        showHeader={false}
+                        pagination={{
+                            hideOnSinglePage: true,
+                            pageSize: 4,
+                            position: ["bottomCenter"],
+                        }}
+                        bordered={true}
+                        loading={isTableLoading}
+                    />
+                )}
                 <Button
                     onClick={showModal}
                     style={{ height: "50px", marginTop: "auto" }}

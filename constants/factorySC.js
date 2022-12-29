@@ -1,7 +1,7 @@
 import { Contract } from "zksync-web3";
 import { deployAccount } from "./main";
 
-export const FACTORY_ADDRESS = "0x77d769EE978F1F2c80634a43e0faa7572b98d2Ff";
+export const FACTORY_ADDRESS = "0x8Fc1005D71cefF1D4b99c25b828a47c9135DCD82";
 export const FACTORY_ABI = [
     {
         inputs: [
@@ -21,6 +21,12 @@ export const FACTORY_ABI = [
                 indexed: true,
                 internalType: "address",
                 name: "walletAddress",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "signingAddress",
                 type: "address",
             },
         ],

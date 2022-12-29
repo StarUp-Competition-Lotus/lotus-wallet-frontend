@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Table, Button, Modal, Input, Popconfirm, Tooltip, Dropdown } from "antd";
+import { Table, Button, Modal, Input, Popconfirm, Tooltip, Dropdown, Empty } from "antd";
 import { CiCircleMinus, CiCircleCheck, CiNoWaitingSign, CiCircleChevRight } from "react-icons/ci";
 
 import { shortenAddress } from "../../utils/utils";
@@ -140,12 +140,20 @@ const MyGuardiansTable = () => {
     return (
         <>
             <div className="table-container">
-                <Table
-                    columns={columns}
-                    dataSource={data}
-                    pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
-                    bordered={true}
-                />
+                {data.length === 0 ? (
+                    <Empty description="No Withdraw Request that needs your approvals at the moment" />
+                ) : (
+                    <Table
+                        columns={columns}
+                        dataSource={data}
+                        pagination={{
+                            hideOnSinglePage: true,
+                            pageSize: 3,
+                            position: ["bottomCenter"],
+                        }}
+                        bordered={true}
+                    />
+                )}
                 <Button
                     onClick={showModal}
                     style={{ height: "50px", marginTop: "auto" }}
