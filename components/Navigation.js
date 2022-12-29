@@ -1,16 +1,8 @@
 import Link from "next/link";
-import { Popconfirm } from "antd";
+import { Popconfirm, Tooltip } from "antd";
 import { useRouter } from "next/router";
-import {
-    CiSignpostR1,
-    CiVault,
-    CiUser,
-    CiRead,
-    CiRepeat,
-    CiTurnR1,
-    CiFileOn,
-    CiLogin,
-} from "react-icons/ci";
+import { CiSignpostR1, CiVault, CiUser, CiRead, CiRepeat, CiTurnR1, CiLogin } from "react-icons/ci";
+import { TfiKey } from "react-icons/tfi";
 import { message } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -20,14 +12,22 @@ import useLogout from "../hooks/useLogout";
 
 const Navigation = () => {
     const [messageApi, contextHolder] = message.useMessage();
-    const { walletAddr } = useWalletContract();
+    const { walletAddr, signingKey } = useWalletContract();
     const { logout } = useLogout();
 
     const handleCopyAddress = () => {
         navigator.clipboard.writeText(walletAddr);
         messageApi.open({
             type: "success",
-            content: "Copied to clipboard",
+            content: "Copied Wallet Address to clipboard",
+        });
+    };
+
+    const handleCopySigningKey = () => {
+        navigator.clipboard.writeText(signingKey);
+        messageApi.open({
+            type: "success",
+            content: "Copied Signing Key to clipboard",
         });
     };
     return (
@@ -63,11 +63,18 @@ const Navigation = () => {
                 </div>
             </div>
             <div className="nav-footer">
-                <p className="nav-text nav-address">
-                    {walletAddr ? shortenAddress(walletAddr) : <LoadingOutlined />}
-                </p>
+                <Tooltip
+                    placement="topLeft"
+                    title={<p style={{ textAlign: "center" }}>{walletAddr}</p>}
+                >
+                    <p onClick={handleCopyAddress} className="nav-text nav-address">
+                        {walletAddr ? shortenAddress(walletAddr) : <LoadingOutlined />}
+                    </p>
+                </Tooltip>
                 <div className="nav-footer-icon">
-                    <CiFileOn size={20} color="#B2B2B2" onClick={handleCopyAddress} />
+                    <Tooltip title={<p style={{ textAlign: "center" }}>{signingKey}</p>}>
+                        <TfiKey onClick={handleCopySigningKey} size={20} color="#B2B2B2" />
+                    </Tooltip>
                     <Popconfirm title="Logout?" okText="Yes" icon={null} onConfirm={logout}>
                         <CiLogin size={20} color="#B2B2B2" />
                     </Popconfirm>
