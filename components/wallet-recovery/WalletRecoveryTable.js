@@ -7,30 +7,6 @@ import { BsCheck2All } from "react-icons/bs";
 import useWalletRecovery from "../../hooks/useWalletRecovery";
 import { shortenAddress } from "../../utils/utils";
 
-const recoveryData = [
-    {
-        address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
-        approvals: {
-            "0xb607A500574fE29afb0d0681f1dC3E82f79f4877": true,
-            "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9": false,
-        },
-    },
-    {
-        address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
-        approvals: {
-            "0xb607A500574fE29afb0d0681f1dC3E82f79f4877": false,
-            "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9": false,
-        },
-    },
-    {
-        address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
-        approvals: {
-            "0xb607A500574fE29afb0d0681f1dC3E82f79f4877": true,
-            "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9": true,
-        },
-    },
-];
-
 const getApprovedNum = (approvals) => {
     let approvedNum = 0;
     for (const guardian in approvals) {
@@ -160,7 +136,7 @@ const WalletRecoveryTable = () => {
         <>
             {notificationContextHolder}
             <div className="table-container">
-                {recoveryData.length === 0 ? (
+                {recoveryRequests.length === 0 && !isTableLoading ? (
                     <Empty description="No Wallet Recovery request that needs your support at the moment" />
                 ) : (
                     <Table
