@@ -6,6 +6,7 @@ import * as ethers from "ethers";
 import useAATransaction from "./useAATransaction";
 import useWalletContract from "./useWalletContract";
 import useNotification from "./useNotification";
+import { generateFbId } from "../utils/utils";
 
 export default () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,16 +67,14 @@ export default () => {
             (walletAddr, recoveryCycle, newSigningAddress, requiredGuardians, initiator) => {
                 const handleRecoveryRequestsData = async () => {
                     const convertedRecoveryCycle = parseInt(
-                        ethers.utils.formatEther(recoveryCycle)
+                        ethers.utils.formatEther(recoveryCycle) * 10 ** 18
                     );
                     const approvals = {};
                     for (let i = 0; i < requiredGuardians.length; i++) {
                         approvals[requiredGuardians[i]] = false;
                     }
                     approvals[initiator] = true;
-                    const id = ethers.utils.keccak256(
-                        ethers.utils.toUtf8Bytes(walletAddr + convertedRecoveryCycle)
-                    );
+                    const id = generateFbId(walletAddr, recoveryCycle);
                     await setDoc(doc(firestoreDb, "recovery-requests", id), {
                         walletAddr: walletAddr,
                         isActive: true,

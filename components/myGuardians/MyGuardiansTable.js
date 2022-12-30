@@ -137,7 +137,7 @@ const MyGuardiansTable = () => {
         <>
             {notificationContextHolder}
             <div className="table-container">
-                {guardiansData.length === 0 ? (
+                {guardiansData.length === 0 && !isTableLoading ? (
                     <Empty description="No Guardians" />
                 ) : (
                     <Table
