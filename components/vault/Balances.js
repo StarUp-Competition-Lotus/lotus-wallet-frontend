@@ -20,7 +20,7 @@ const Balances = () => {
             setBalance(ethers.utils.formatEther(balance));
         };
         getBalance();
-    }, []);
+    }, [walletAddr]);
 
     const showModal = () => {
         setIsModalOpen(true);

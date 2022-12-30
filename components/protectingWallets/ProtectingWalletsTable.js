@@ -55,7 +55,7 @@ const ProtectingWalletsTable = () => {
                 columns={protectingGuardiansColumns}
                 dataSource={protectingGuardiansData}
                 showHeader={false}
-                pagination={{ hideOnSinglePage: true, pageSize: 3, position: ["bottomCenter"] }}
+                pagination={{ hideOnSinglePage: true, pageSize: 6, position: ["bottomCenter"] }}
                 bordered={true}
                 loading={isTableLoading}
             />}

@@ -6,16 +6,18 @@ import firestoreDb from "../../firebase";
 
 import useWalletContract from "../../hooks/useWalletContract";
 import useAATransaction from "../../hooks/useAATransaction";
+import useNotification from "../../hooks/useNotification";
 
 const MyGuardiansTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [guardians, setGuardians] = useState([]);
     const [newGuardianInput, setNewGuardianInput] = useState("");
     const [isTransacting, setIsTransacting] = useState(false);
-    const [isTableLoading, setIsTableLoading] = useState(false);
+    const [isTableLoading, setIsTableLoading] = useState(true);
 
     const { walletContract } = useWalletContract();
     const { executeAA, notificationContextHolder } = useAATransaction();
+    const { raiseFailure } = useNotification();
 
     const showModal = () => {
         setIsModalOpen(true);
