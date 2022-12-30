@@ -3,6 +3,7 @@ import { useState, useEffect, createContext } from "react";
 export const WalletContext = createContext();
 
 export const WalletContextProvider = ({ children }) => {
+    const [isLoadingFromLS, setIsLoadingFromLS] = useState(true);
     const [walletAddr, setWalletAddr] = useState();
     const [signingKey, setSigningKey] = useState();
 
@@ -13,10 +14,20 @@ export const WalletContextProvider = ({ children }) => {
             setWalletAddr(walletAddr);
             setSigningKey(signingKey);
         }
-    }, []);
+        setIsLoadingFromLS(false);
+    }, [setIsLoadingFromLS]);
 
     return (
-        <WalletContext.Provider value={{ walletAddr, setWalletAddr, signingKey, setSigningKey }}>
+        <WalletContext.Provider
+            value={{
+                walletAddr,
+                setWalletAddr,
+                signingKey,
+                setSigningKey,
+                isLoadingFromLS,
+                setIsLoadingFromLS,
+            }}
+        >
             {children}
         </WalletContext.Provider>
     );

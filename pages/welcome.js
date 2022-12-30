@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { Spin } from "antd";
 import { Modal, Button, Input } from "antd";
 import { CiImport, CiWallet, CiRepeat } from "react-icons/ci";
 
@@ -7,10 +8,12 @@ import useWalletContract from "../hooks/useWalletContract";
 import useWelcome from "../hooks/useWelcome";
 
 export default () => {
-    const { walletAddr, signingKey } = useWalletContract();
+    const { walletAddr, signingKey, isLoadingFromLS } = useWalletContract();
     const router = useRouter();
 
-    if (walletAddr && signingKey) {
+    if (isLoadingFromLS) return <Spin size="large" style={{ marginTop: "20vh" }} />;
+
+    if (walletAddr && signingKey && !isLoadingFromLS) {
         router.push("/");
         return;
     }
