@@ -6,7 +6,7 @@ import { WALLET_ABI } from "../constants/walletSC";
 
 export default () => {
     const walletContext = useContext(WalletContext);
-    const { walletAddr, signingKey } = walletContext;
+    const { walletAddr, signingKey, isLoadingFromLS } = walletContext;
     const signingAccount = signingKey ? new Wallet(signingKey).connect(provider) : null;
     const walletContract =
         walletAddr && signingAccount ? new Contract(walletAddr, WALLET_ABI, signingAccount) : null;
@@ -16,5 +16,5 @@ export default () => {
             : null;
         return walletContract;
     };
-    return { walletContract, walletAddr, signingKey, getWalletContract };
+    return { walletContract, walletAddr, signingKey, getWalletContract, isLoadingFromLS };
 };

@@ -1,64 +1,58 @@
-import { useState } from "react";
+import { useMemo } from "react";
 
-import { Table, Button, Modal, Popconfirm, Input, Empty } from "antd";
-import { CiCircleCheck } from "react-icons/ci";
+import { Table, Button, Modal, Popconfirm, Input, Empty, Tooltip } from "antd";
+import { CiCircleCheck, CiCircleChevRight } from "react-icons/ci";
+import { BsCheck2All } from "react-icons/bs";
 
 import useWalletRecovery from "../../hooks/useWalletRecovery";
+import { shortenAddress } from "../../utils/utils";
 
-const guardiansCount = 3;
-
-const columns = [
-    {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-        render: (address) => <p style={{ color: "#1777FE" }}>{address}</p>,
-    },
-    {
-        title: "Approvals",
-        dataIndex: "approvals",
-        key: "approvals",
-        render: (approvals) => (
-            <p style={{ color: "#3c4048" }}>
-                {approvals}/{guardiansCount}
-            </p>
-        ),
-    },
-    {
-        title: "",
-        dataIndex: "",
-        key: "",
-        render: () => (
-            <Popconfirm title="Approve this recovery?" okText="Approve" icon={null}>
-                <div style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>
-                    <CiCircleCheck color="#1777FE" size={30} />
-                </div>
-            </Popconfirm>
-        ),
-    },
-];
-
-const data = [
+const recoveryData = [
     {
         address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
-        approvals: 2,
+        approvals: {
+            "0xb607A500574fE29afb0d0681f1dC3E82f79f4877": true,
+            "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9": false,
+        },
     },
     {
-        address: "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9",
-        approvals: 1,
+        address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
+        approvals: {
+            "0xb607A500574fE29afb0d0681f1dC3E82f79f4877": false,
+            "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9": false,
+        },
+    },
+    {
+        address: "0xb607A500574fE29afb0d0681f1dC3E82f79f4877",
+        approvals: {
+            "0xb607A500574fE29afb0d0681f1dC3E82f79f4877": true,
+            "0x5FcF81463a2A63c10F51c4F9D55Fb7403759C8B9": true,
+        },
     },
 ];
 
-const WalletRecoveryTable = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const getApprovedNum = (approvals) => {
+    let approvedNum = 0;
+    for (const guardian in approvals) {
+        if (approvals[guardian]) {
+            approvedNum++;
+        }
+    }
+    return approvedNum;
+};
 
+const WalletRecoveryTable = () => {
     const {
-        newSigningAddrInput,
         setRecoverWalletInput,
         setNewSigningAddrInput,
         initiateRecovery,
         notificationContextHolder,
         isTransacting,
+        isModalOpen,
+        setIsModalOpen,
+        walletAddr,
+        isTableLoading,
+        recoveryRequests,
     } = useWalletRecovery();
 
     const showModal = () => {
@@ -73,21 +67,111 @@ const WalletRecoveryTable = () => {
         setIsModalOpen(false);
     };
 
+    const columns = useMemo(
+        () => [
+            {
+                title: "Address",
+                dataIndex: "walletAddr",
+                key: "walletAddr",
+                render: (walletAddr) => (
+                    <Tooltip title={walletAddr}>
+                        <p style={{ color: "#1777FE" }}>{shortenAddress(walletAddr)}</p>
+                    </Tooltip>
+                ),
+            },
+            {
+                title: "Approvals",
+                dataIndex: "approvals",
+                key: "approvals",
+                render: (approvals) => {
+                    const guardiansNum = Object.keys(approvals).length;
+                    const approvedNum = getApprovedNum(approvals);
+                    return (
+                        <p style={{ color: "#3c4048" }}>
+                            {approvedNum}/{guardiansNum}
+                        </p>
+                    );
+                },
+            },
+            {
+                title: <p style={{ textAlign: "center" }}>Approve</p>,
+                dataIndex: "approvals",
+                key: "approvals",
+                render: (approvals) => {
+                    return approvals[walletAddr] ? (
+                        <Tooltip title="Approved">
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignContent: "center",
+                                }}
+                            >
+                                <BsCheck2All color="#1777FE" size={30} />
+                            </div>
+                        </Tooltip>
+                    ) : (
+                        <Popconfirm title="Approve this recovery?" okText="Approve" icon={null}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignContent: "center",
+                                }}
+                            >
+                                <CiCircleCheck color="#1777FE" size={30} />
+                            </div>
+                        </Popconfirm>
+                    );
+                },
+            },
+            {
+                title: <p style={{ textAlign: "center" }}>Execute</p>,
+                dataIndex: "approvals",
+                key: "approvals",
+                render: (approvals) => {
+                    const guardiansNum = Object.keys(approvals).length;
+                    const approvedNum = getApprovedNum(approvals);
+                    return approvedNum === guardiansNum ? (
+                        <Popconfirm
+                            title="Execute this recovery?"
+                            cancelText="No"
+                            okText="Yes"
+                            icon={null}
+                        >
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignContent: "center",
+                                }}
+                            >
+                                <CiCircleChevRight color="#54B435" size={30} />
+                            </div>
+                        </Popconfirm>
+                    ) : null;
+                },
+            },
+        ],
+        [walletAddr]
+    );
+
     return (
         <>
             {notificationContextHolder}
             <div className="table-container">
-                {data.length === 0 ? (
+                {recoveryData.length === 0 ? (
                     <Empty description="No Wallet Recovery request that needs your support at the moment" />
                 ) : (
                     <Table
                         columns={columns}
-                        dataSource={data}
+                        dataSource={recoveryRequests}
                         pagination={{
                             hideOnSinglePage: true,
                             pageSize: 3,
                             position: ["bottomCenter"],
                         }}
+                        loading={isTableLoading}
                         bordered={true}
                     />
                 )}
@@ -97,6 +181,7 @@ const WalletRecoveryTable = () => {
                     type="primary"
                     size="large"
                     block
+                    disabled={isTableLoading}
                 >
                     Start recover a wallet
                 </Button>
