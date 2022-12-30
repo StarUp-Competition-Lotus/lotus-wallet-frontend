@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Popconfirm, Tooltip } from "antd";
+import { Popconfirm, Tooltip, Button } from "antd";
 import { useRouter } from "next/router";
 import { CiSignpostR1, CiVault, CiUser, CiRead, CiRepeat, CiTurnR1, CiLogin } from "react-icons/ci";
 import { TfiKey } from "react-icons/tfi";
@@ -67,16 +67,40 @@ const Navigation = () => {
                     placement="topLeft"
                     title={<p style={{ textAlign: "center" }}>{walletAddr}</p>}
                 >
-                    <p onClick={handleCopyAddress} className="nav-text nav-address">
+                    <Button
+                        size="large"
+                        style={{ flex: 1, marginRight: "0.5rem" }}
+                        onClick={handleCopyAddress}
+                    >
                         {walletAddr ? shortenAddress(walletAddr) : <LoadingOutlined />}
-                    </p>
+                    </Button>
                 </Tooltip>
                 <div className="nav-footer-icon">
                     <Tooltip title={<p style={{ textAlign: "center" }}>{signingKey}</p>}>
-                        <TfiKey onClick={handleCopySigningKey} size={20} color="#B2B2B2" />
+                        <Button size="large" type="text" onClick={handleCopySigningKey}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <TfiKey size={22} color="#B2B2B2" />
+                            </div>
+                        </Button>
                     </Tooltip>
                     <Popconfirm title="Logout?" okText="Yes" icon={null} onConfirm={logout}>
-                        <CiLogin size={20} color="#B2B2B2" />
+                        <Button size="large" type="text">
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <CiLogin size={22} color="#B2B2B2" />
+                            </div>
+                        </Button>
                     </Popconfirm>
                 </div>
             </div>
