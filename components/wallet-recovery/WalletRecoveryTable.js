@@ -29,6 +29,8 @@ const WalletRecoveryTable = () => {
         walletAddr,
         isTableLoading,
         recoveryRequests,
+        supportRecovery,
+        executeRecovery,
     } = useWalletRecovery();
 
     const showModal = () => {
@@ -70,10 +72,10 @@ const WalletRecoveryTable = () => {
                 },
             },
             {
-                title: <p style={{ textAlign: "center" }}>Approve</p>,
+                title: <p style={{ textAlign: "center" }}>Support</p>,
                 dataIndex: "approvals",
                 key: "approvals",
-                render: (approvals) => {
+                render: (approvals, record) => {
                     return approvals[walletAddr] ? (
                         <Tooltip title="Approved">
                             <div
@@ -87,7 +89,14 @@ const WalletRecoveryTable = () => {
                             </div>
                         </Tooltip>
                     ) : (
-                        <Popconfirm title="Approve this recovery?" okText="Approve" icon={null}>
+                        <Popconfirm
+                            title="Approve this recovery?"
+                            okText="Approve"
+                            icon={null}
+                            onConfirm={() => {
+                                supportRecovery(record.walletAddr);
+                            }}
+                        >
                             <div
                                 style={{
                                     display: "flex",
@@ -105,7 +114,7 @@ const WalletRecoveryTable = () => {
                 title: <p style={{ textAlign: "center" }}>Execute</p>,
                 dataIndex: "approvals",
                 key: "approvals",
-                render: (approvals) => {
+                render: (approvals, record) => {
                     const guardiansNum = Object.keys(approvals).length;
                     const approvedNum = getApprovedNum(approvals);
                     return approvedNum === guardiansNum ? (
@@ -114,6 +123,9 @@ const WalletRecoveryTable = () => {
                             cancelText="No"
                             okText="Yes"
                             icon={null}
+                            onConfirm={() => {
+                                executeRecovery(record.walletAddr);
+                            }}
                         >
                             <div
                                 style={{

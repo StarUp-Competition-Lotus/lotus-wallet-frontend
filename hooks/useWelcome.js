@@ -60,7 +60,6 @@ export default () => {
     useEffect(() => {
         factoryContract.on("WalletCreated", (walletAddress, signingAddress) => {
             if (!currentSingingKey) return;
-            console.log("currentSingingKey :", currentSingingKey);
             const handleWalletCreated = async () => {
                 await setDoc(doc(firestoreDb, "wallets", walletAddress), {
                     signingAddr: signingAddress,
