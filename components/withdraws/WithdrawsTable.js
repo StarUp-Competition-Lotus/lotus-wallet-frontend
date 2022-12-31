@@ -16,7 +16,10 @@ const MyGuardiansTable = () => {
         withdrawRequestCount,
         isTableLoading,
         isTransacting,
-        notificationContextHolder
+        notificationContextHolder,
+        createWithdrawRequest,
+        cancelWithdrawRequest,
+        executeWithdrawRequest
     } = useWalletWithdraw();
 
     const showModal = () => {
@@ -105,12 +108,11 @@ const MyGuardiansTable = () => {
                     ) : null;
                 },
             },
-
-        ], [withdraws]
+        ]
     );
 
     const data = useMemo(() => {
-        return withdraws
+        return withdraws;
     }, [withdraws]);
     
     const guardianApprovalsDataHandle = (guardiansApprovals) => {

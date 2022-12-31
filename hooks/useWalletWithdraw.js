@@ -59,14 +59,14 @@ export default () => {
             }
         });
 
-        console.log('here')
+        console.log('getting withdraws: ', subWithdraws)
 
-        if (subWithdraws.length > 0 || withdraws.length == 1) {
+        if (subWithdraws.length > 0 || withdraws.length == 0) {
             setWithdraws(withdraws.concat(subWithdraws)) 
         }
         
         setIsTableLoading(false)
-    }, [walletAddr]);
+    }, []);
 
     const createWithdrawRequest = useCallback(async () => {
         setIsTransacting(true);
@@ -122,7 +122,7 @@ export default () => {
             handleWithdrawRequestAdded();
             setIsTableLoading(false)
         })
-    });
+    }, []);
 
     useEffect(() => {
         walletContract.on("WithdrawRequestExecuted", (walletAddr, withdrawIndex) => {
@@ -137,7 +137,7 @@ export default () => {
             handleWithdrawRequestExecuted();
             setIsTableLoading(false)
         });
-    });
+    }, []);
 
     useEffect(() => {
         walletContract.on("WithdrawRequestApproved", (walletAddr, withdrawIndex, guardianApproved) => {
@@ -170,6 +170,9 @@ export default () => {
         withdrawRequestCount,
         isTableLoading,
         isTransacting,
-        notificationContextHolder
+        notificationContextHolder,
+        createWithdrawRequest,
+        cancelWithdrawRequest,
+        executeWithdrawRequest
     };
 };
