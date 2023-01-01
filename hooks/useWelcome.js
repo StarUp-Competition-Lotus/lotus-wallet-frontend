@@ -13,6 +13,8 @@ export default () => {
     const [isImportingSK, setIsImportingSK] = useState(false);
     const [isCreatingWallet, setIsCreatingWallet] = useState(false);
     const [currentSingingKey, setCurrentSigningKey] = useState();
+    const [newSigningAddr, setNewSigningAddr] = useState("");
+    const [newSK, setNewSK] = useState("");
     const { setWalletAddr, setSigningKey } = walletContext;
 
     const { raiseSuccess, raiseFailure, notificationContextHolder } = useNotification();
@@ -60,7 +62,6 @@ export default () => {
     useEffect(() => {
         factoryContract.on("WalletCreated", (walletAddress, signingAddress) => {
             if (!currentSingingKey) return;
-            console.log("currentSingingKey :", currentSingingKey);
             const handleWalletCreated = async () => {
                 await setDoc(doc(firestoreDb, "wallets", walletAddress), {
                     signingAddr: signingAddress,
@@ -76,11 +77,20 @@ export default () => {
         });
     }, [currentSingingKey]);
 
+    useEffect(() => {
+        const newSigningAccount = Wallet.createRandom();
+        const { privateKey: newSecretKey, address: newSigningAddress } = newSigningAccount;
+        setNewSigningAddr(newSigningAddress);
+        setNewSK(newSecretKey);
+    }, [setNewSigningAddr, setNewSK]);
+
     return {
         createNewWallet,
         importSecretKey,
         isImportingSK,
         notificationContextHolder,
         isCreatingWallet,
+        newSigningAddr,
+        newSK
     };
 };

@@ -43,6 +43,10 @@
     align-items: center;
 }
 
+.nav-footer .ant-btn-text {
+    padding: 4px 2px;
+}
+
 .nav-address {
     flex: 1;
     text-align: center;
@@ -57,7 +61,7 @@
 
 .nav-footer-icon {
     display: flex;
-    gap: 10px;
+    gap: 3px;
 }
 
 .nav-item {

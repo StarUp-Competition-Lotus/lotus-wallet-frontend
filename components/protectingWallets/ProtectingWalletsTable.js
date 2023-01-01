@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, where, query } from "firebase/firestore";
 import firestoreDb from "../../firebase";
 import { Table, Empty } from "antd";
 
@@ -14,23 +14,22 @@ const ProtectingWalletsTable = () => {
         setIsTableLoading(true);
         let addresses = [];
 
-        const querySnapshot = await getDocs(collection(firestoreDb, "wallets"));
+        const q = query(
+            collection(firestoreDb, "wallets"),
+            where("guardians", "array-contains", walletAddr)
+        );
+        const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
-            doc.data().guardians.forEach((subDoc) => {
-                if (subDoc === walletAddr && !protectingWallets.includes(doc.id)) {
-                    addresses.push(doc.id);
-                }
-            });
-            if (addresses.length != 0) {
-                setProtectingWallets(protectingWallets.concat(addresses));
-            }
+            addresses.push(doc.id);
         });
+        setProtectingWallets(addresses);
         setIsTableLoading(false);
     };
 
     useEffect(() => {
+        if (!walletAddr) return;
         getProtectingData();
-    }, [protectingWallets]);
+    }, [walletAddr]);
 
     const protectingGuardiansColumns = [
         {

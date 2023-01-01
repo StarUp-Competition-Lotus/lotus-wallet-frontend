@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, setDoc, collection, query, where, getDocs, getDoc } from "firebase/firestore";
 import firestoreDb from "../firebase";
 import * as ethers from "ethers";
 
@@ -54,11 +54,27 @@ export default () => {
         setIsModalOpen(false);
         setRecoverWalletInput("");
         setNewSigningAddrInput("");
-    }, [recoverWalletInput, newSigningAddrInput]);
+    }, [targetWalletContract, recoverWalletInput, newSigningAddrInput]);
+
+    const supportRecovery = useCallback(async (supportingWalletAddr) => {
+        const supportingRecoveryContract = getWalletContract(supportingWalletAddr);
+        const tx = await supportingRecoveryContract.populateTransaction.supportRecovery();
+        setIsTableLoading(true);
+        await executeAA(tx, "Recovery supported successfully", "Error supporting recovery");
+        setIsTableLoading(false);
+    }, []);
+
+    const executeRecovery = useCallback(async (executingWalletAddr) => {
+        const executingRecoveryContract = getWalletContract(executingWalletAddr);
+        const tx = await executingRecoveryContract.populateTransaction.executeRecovery();
+        setIsTableLoading(true);
+        await executeAA(tx, "Recovery executed successfully", "Error executing recovery");
+        setIsTableLoading(false);
+    }, []);
 
     useEffect(() => {
         getRecoveryRequests();
-    }, [getRecoveryRequests]);
+    }, []);
 
     useEffect(() => {
         if (!targetWalletContract) return;
@@ -90,6 +106,61 @@ export default () => {
         );
     }, []);
 
+    useEffect(() => {
+        targetWalletContract.on(
+            "RecoverySupported",
+            (walletAddr, recoverIndex, guardianSupported) => {
+                const handleRecoverSupported = async () => {
+                    try {
+                        const id = generateFbId(walletAddr, recoverIndex);
+                        await setDoc(
+                            doc(firestoreDb, "recovery-requests", id),
+                            {
+                                approvals: { [`${guardianSupported}`]: true },
+                            },
+                            { merge: true }
+                        );
+                        await getRecoveryRequests();
+                    } catch (e) {
+                        console.log("error: ", e);
+                    }
+                };
+                handleRecoverSupported();
+            }
+        );
+    }, []);
+
+    useEffect(() => {
+        targetWalletContract.on("RecoveryExecuted", (walletAddr, recoverIndex) => {
+            const handleRecoverExecuted = async () => {
+                try {
+                    const id = generateFbId(walletAddr, recoverIndex);
+                    const recoveryRef = doc(firestoreDb, "recovery-requests", id);
+                    const recoverySnap = await getDoc(recoveryRef);
+                    const newSigningAddress = recoverySnap.data().newSigningAddress;
+                    await setDoc(
+                        doc(firestoreDb, "wallets", walletAddr),
+                        {
+                            signingAddr: newSigningAddress,
+                        },
+                        { merge: true }
+                    );
+                    await setDoc(
+                        doc(firestoreDb, "recovery-requests", id),
+                        {
+                            isActive: false,
+                        },
+                        { merge: true }
+                    );
+                    await getRecoveryRequests();
+                } catch (e) {
+                    console.log("error: ", e);
+                }
+            };
+            handleRecoverExecuted();
+        });
+    });
+
     return {
         newSigningAddrInput,
         setRecoverWalletInput,
@@ -103,5 +174,7 @@ export default () => {
         getRecoveryRequests,
         isTableLoading,
         recoveryRequests,
+        supportRecovery,
+        executeRecovery,
     };
 };
