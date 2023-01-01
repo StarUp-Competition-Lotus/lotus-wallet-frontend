@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import * as ethers from "ethers";
+import { getEthPriceNow } from "get-eth-price";
 import { Button, Modal, QRCode, message } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -11,6 +12,7 @@ const Balances = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [balance, setBalance] = useState();
+    const [ethToUsd, setEthToUsd] = useState();
 
     const { walletAddr } = useWalletContract();
 
@@ -21,6 +23,13 @@ const Balances = () => {
         };
         getBalance();
     }, [walletAddr]);
+
+    useEffect(() => {
+        const now = new Date();
+        getEthPriceNow().then((data) => {
+            setEthToUsd(data[now]["ETH"]["USD"]);
+        });
+    }, []);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -45,9 +54,9 @@ const Balances = () => {
             <div className="vault-container">
                 <div className="vault-total">
                     <p style={{ color: "#aaaaaa" }}>Total: </p>
-                    {balance ? (
+                    {balance && ethToUsd ? (
                         <h2 className="vault-total-amount">
-                            ${roundedNumber(parseFloat(balance))}
+                            ${(roundedNumber(parseFloat(balance)) * ethToUsd).toFixed(4)}
                         </h2>
                     ) : (
                         <LoadingOutlined
@@ -60,9 +69,17 @@ const Balances = () => {
                         <p>My assets</p>
                     </div>
                     <div className="vault-assets-list">
-                        <Token name="ETH" amount="0.00" />
-                        <Token name="DAI" amount="0.00" />
-                        <Token name="LINK" amount="0.00" />
+                        <Token
+                            name="ETH"
+                            amount="0.00"
+                            toUsd={
+                                ethToUsd
+                                    ? (roundedNumber(parseFloat(balance)) * ethToUsd).toFixed(4)
+                                    : 0
+                            }
+                        />
+                        <Token name="DAI" amount="0.00" toUsd={0} />
+                        <Token name="LINK" amount="0.00" toUsd={0} />
                     </div>
                     <div style={{ padding: "1rem 1rem" }}>
                         <Button
@@ -97,7 +114,7 @@ const Balances = () => {
     );
 };
 
-const Token = ({ name, amount }) => {
+const Token = ({ name, amount, toUsd }) => {
     return (
         <div className="vault-assets-token">
             <div style={{ width: "20%", display: "flex", alignItems: "center", gap: "0.75rem" }}>
@@ -108,7 +125,7 @@ const Token = ({ name, amount }) => {
                 {amount}
             </p>
             <p style={{ fontSize: "13px", color: "#aaaaaa", width: "40%", textAlign: "right" }}>
-                $0.000000
+                ${toUsd}
             </p>
         </div>
     );
