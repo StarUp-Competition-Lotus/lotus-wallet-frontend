@@ -1,6 +1,6 @@
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Spin } from "antd";
 import { Modal, Button, Input, Tooltip, message } from "antd";
 import { CiImport, CiWallet, CiRepeat } from "react-icons/ci";
 import {
@@ -10,6 +10,7 @@ import {
     EyeInvisibleOutlined,
 } from "@ant-design/icons";
 
+import SpinningScreen from "../components/SpinningScreen";
 import useWalletContract from "../hooks/useWalletContract";
 import useWelcome from "../hooks/useWelcome";
 
@@ -17,7 +18,7 @@ export default () => {
     const { walletAddr, signingKey, isLoadingFromLS } = useWalletContract();
     const router = useRouter();
 
-    if (isLoadingFromLS) return <Spin size="large" style={{ marginTop: "20vh" }} />;
+    if (isLoadingFromLS) return <SpinningScreen />;
 
     if (walletAddr && signingKey && !isLoadingFromLS) {
         router.push("/");
@@ -74,6 +75,10 @@ export default () => {
 
     return (
         <>
+            <Head>
+                <title>Louts | Welcome</title>
+                <link rel="icon" href="/logo.png" />
+            </Head>
             {notificationContextHolder}
             {contextHolder}
             <div className="welcome-screen">

@@ -9,16 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.8.0",
     "antd": "5.1.0",
     "ethers": "^5.7.2",
+    "firebase": "9.13.0",
+    "get-eth-price": "^1.0.0",
     "next": "13.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
-    "zksync-web3": "^0.12.3",
-    "@ant-design/icons": "^4.8.0",
-    "firebase": "9.13.0"
+    "zksync-web3": "^0.12.3"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

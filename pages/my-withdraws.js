@@ -1,6 +1,8 @@
+import Head from "next/head";
 import { useRouter } from "next/router";
+
 import useWalletContract from "../hooks/useWalletContract";
-import { Spin } from "antd";
+import SpinningScreen from "../components/SpinningScreen";
 import PageLayout from "../components/PageLayout";
 import Withdraws from "../components/withdraws";
 
@@ -8,7 +10,7 @@ export default () => {
     const { walletAddr, signingKey, isLoadingFromLS } = useWalletContract();
     const router = useRouter();
 
-    if (isLoadingFromLS) return <Spin size="large" style={{ marginTop: "20vh" }} />;
+    if (isLoadingFromLS) return <SpinningScreen />;
 
     if (!walletAddr && !signingKey && !isLoadingFromLS) {
         typeof window !== "undefined" && router.push("/welcome");
@@ -17,6 +19,10 @@ export default () => {
 
     return (
         <PageLayout>
+            <Head>
+                <title>Louts | My Withdraws</title>
+                <link rel="icon" href="/logo.png" />
+            </Head>
             <Withdraws />
         </PageLayout>
     );
