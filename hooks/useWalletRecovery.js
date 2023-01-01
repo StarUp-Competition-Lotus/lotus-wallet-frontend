@@ -74,7 +74,7 @@ export default () => {
 
     useEffect(() => {
         getRecoveryRequests();
-    }, [getRecoveryRequests]);
+    }, []);
 
     useEffect(() => {
         if (!targetWalletContract) return;
