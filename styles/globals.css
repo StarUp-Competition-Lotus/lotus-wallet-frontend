@@ -34,3 +34,7 @@ a {
     flex-direction: column;
     gap: 1rem;
 }
+
+.ant-modal-confirm-content {
+    max-width: 100% !important;
+}

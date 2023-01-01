@@ -1,8 +1,14 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Spin } from "antd";
-import { Modal, Button, Input } from "antd";
+import { Modal, Button, Input, Tooltip, message } from "antd";
 import { CiImport, CiWallet, CiRepeat } from "react-icons/ci";
+import {
+    InfoCircleOutlined,
+    CopyOutlined,
+    EyeOutlined,
+    EyeInvisibleOutlined,
+} from "@ant-design/icons";
 
 import useWalletContract from "../hooks/useWalletContract";
 import useWelcome from "../hooks/useWelcome";
@@ -17,9 +23,12 @@ export default () => {
         router.push("/");
         return;
     }
-    const [waitingRecovery, setWaitingRecovery] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isImportingKeyModalOpen, setIsImportingKeyModalOpen] = useState(false);
+    const [isRecoverModalOpen, setIsRecoverModalOpen] = useState(false);
+    const [showNewSecretKey, setShowNewSecretKey] = useState(false);
     const [inputSK, setInputSK] = useState("");
+
+    const [messageApi, contextHolder] = message.useMessage();
 
     const {
         createNewWallet,
@@ -27,24 +36,51 @@ export default () => {
         isImportingSK,
         notificationContextHolder,
         isCreatingWallet,
+        newSigningAddr,
+        newSK,
     } = useWelcome();
 
-    const showModal = () => {
-        setIsModalOpen(true);
+    const showImportingModal = () => {
+        setIsImportingKeyModalOpen(true);
     };
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
+    const notShowImportingModal = () => {
+        setIsImportingKeyModalOpen(false);
+    };
+
+    const showRecoveryModal = () => {
+        setIsRecoverModalOpen(true);
+    };
+
+    const hideRecoveryModal = () => {
+        setIsRecoverModalOpen(false);
+    };
+
+    const handleCopyRecoveryCode = () => {
+        navigator.clipboard.writeText(newSigningAddr);
+        messageApi.open({
+            type: "success",
+            content: "Copied Recovery Code to clipboard",
+        });
+    };
+
+    const handleCopyNewSK = () => {
+        navigator.clipboard.writeText(newSK);
+        messageApi.open({
+            type: "success",
+            content: "Copied new Secret Key to clipboard",
+        });
     };
 
     return (
         <>
             {notificationContextHolder}
+            {contextHolder}
             <div className="welcome-screen">
                 <img src="/logo.png" className="welcome-logo" />
                 <div style={{ textAlign: "center" }}>
                     <h1>Welcome to Lotus Wallet</h1>
-                    <p style={{ color: "#aaaaaa", marginTop: "5px" }}>Cheap - Reliable - Secure</p>
+                    <p style={{ color: "#aaaaaa", marginTop: "5px" }}>Secure - Cheap - Reliable</p>
                 </div>
                 <div className="welcome-action-buttons">
                     <ActionButton
@@ -59,30 +95,29 @@ export default () => {
                         loading={false}
                         icon={<CiRepeat />}
                         title="Recover a Wallet"
-                        action={() => {}}
+                        action={showRecoveryModal}
                     />
                     <ActionButton
                         disabled={isCreatingWallet}
                         loading={false}
                         icon={<CiImport />}
                         title="Import wallet secret key"
-                        action={showModal}
+                        action={showImportingModal}
                     />
                 </div>
             </div>
             <Modal
                 title="Importing Secret Key"
                 centered
-                open={isModalOpen}
+                open={isImportingKeyModalOpen}
                 onOk={async () => {
-                    console.log(inputSK);
                     await importSecretKey(inputSK);
                 }}
-                onCancel={handleCancel}
+                onCancel={notShowImportingModal}
                 okText="Import"
                 // bodyStyle={{ margin: "1rem 0" }}
                 footer={[
-                    <Button onClick={handleCancel}>Cancel</Button>,
+                    <Button onClick={notShowImportingModal}>Cancel</Button>,
                     <Button
                         type="primary"
                         loading={isImportingSK}
@@ -100,6 +135,122 @@ export default () => {
                         setInputSK(e.target.value);
                     }}
                 />
+            </Modal>
+            <Modal
+                centered
+                width={500}
+                maskClosable={false}
+                closable={false}
+                cancelText={null}
+                okText="Confirm"
+                onOk={hideRecoveryModal}
+                onCancel={hideRecoveryModal}
+                open={isRecoverModalOpen}
+                title="Recover Wallet"
+            >
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "0.75rem",
+                        marginTop: "0.5rem",
+                        width: "100%",
+                    }}
+                >
+                    <div>
+                        <h4 style={{ marginBottom: "0.3rem" }}>Recovery Code</h4>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <div style={{ flex: 1 }}>
+                                <Input
+                                    disabled
+                                    value={newSigningAddr}
+                                    style={{ maxWidth: "395px" }}
+                                    suffix={
+                                        <Tooltip title="Send this code to the guardians of your wallet to start recovery.">
+                                            <InfoCircleOutlined
+                                                style={{ color: "rgba(0,0,0,.45)" }}
+                                            />
+                                        </Tooltip>
+                                    }
+                                />
+                            </div>
+                            <Button
+                                onClick={handleCopyRecoveryCode}
+                                type="text"
+                                style={{ padding: "4px", justifySelf: "end" }}
+                            >
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <CopyOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                                </div>
+                            </Button>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style={{ marginBottom: "0.3rem" }}>New Secret Key</h4>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <div style={{ flex: 1 }}>
+                                <Input
+                                    disabled
+                                    value={showNewSecretKey ? newSK : "••••••••"}
+                                    style={{ maxWidth: "395px" }}
+                                    suffix={
+                                        <Tooltip title="DO NOT SEND THIS TO ANYONE. New Secret Key for you to login your wallet after all the guardians has support your request.">
+                                            <InfoCircleOutlined
+                                                style={{ color: "rgba(0,0,0,.45)" }}
+                                            />
+                                        </Tooltip>
+                                    }
+                                />
+                            </div>
+                            <div style={{ display: "flex", gap: "3px" }}>
+                                <Button
+                                    onClick={() => {
+                                        setShowNewSecretKey((prev) => !prev);
+                                    }}
+                                    type="text"
+                                    style={{ padding: "4px" }}
+                                >
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        {showNewSecretKey ? (
+                                            <EyeOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                                        ) : (
+                                            <EyeInvisibleOutlined
+                                                style={{ color: "rgba(0,0,0,.45)" }}
+                                            />
+                                        )}
+                                    </div>
+                                </Button>
+                                <Button
+                                    onClick={handleCopyNewSK}
+                                    type="text"
+                                    style={{ padding: "4px" }}
+                                >
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <CopyOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                                    </div>
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </Modal>
         </>
     );
