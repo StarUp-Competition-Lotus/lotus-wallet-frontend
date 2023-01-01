@@ -39,11 +39,6 @@ const MyGuardiansTable = () => {
     const tableColumns = useMemo(
         () => [
             {
-                title: "",
-                dataIndex: "index",
-                key: "index"
-            },
-            {
                 title: "Receiver",
                 dataIndex: "receiver",
                 key: "receiver",
@@ -173,7 +168,7 @@ const MyGuardiansTable = () => {
                 open={isModalOpen}
                 bodyStyle={{ margin: "1rem 0" }}
                 footer={[
-                    <Button onClick={handleCancel}>Cancel</Button>,
+                    <Button onClick={() => {setIsModalOpen(false)}}>Cancel</Button>,
                     <Button type="primary" loading={isTransacting} onClick={handleOk}>
                         Add
                     </Button>,

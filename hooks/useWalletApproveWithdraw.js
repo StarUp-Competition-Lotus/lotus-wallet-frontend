@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, setDoc, collection, getDocs } from "firebase/firestore";
 import firestoreDb from "../firebase";
 
 import useAATransaction from "./useAATransaction";
@@ -40,21 +40,17 @@ export default () => {
         let subWithdraws = [];
 
         const querySnapshot = await getDocs(
-            collection(firestoreDb, "withdraws"),
-            where("isActive", "==", true)
+            collection(firestoreDb, "withdraws")
         );
 
         querySnapshot.forEach((doc) => {
-            if (
-                doc.data().requiredGuardians[walletAddr] !== undefined && 
-                withdraws.filter(w => w.index === doc.data().index).length == 0) {
-                    if (doc.data().requiredGuardians[walletAddr] == false) {
-                        subWithdraws.push({
-                            from: doc.id.substring(0, 42),
-                            to: doc.data().receiver,
-                            index: doc.data().index
-                        })
-                    }
+            if (doc.data().isActive && withdraws.filter(w => w.index === doc.data().index).length == 0) {
+                subWithdraws.push({
+                    from: doc.id.substring(0, 42),
+                    to: doc.data().receiver,
+                    index: doc.data().index,
+                    approvals: doc.data().requiredGuardians
+                })
             }
         });
 
@@ -67,6 +63,7 @@ export default () => {
 
     useEffect(() => {
         getActiveWithdraws();
+        
     }, [])
 
     return {

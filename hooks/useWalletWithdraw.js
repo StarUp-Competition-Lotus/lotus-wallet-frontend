@@ -59,8 +59,6 @@ export default () => {
             }
         });
 
-        console.log('getting withdraws: ', subWithdraws)
-
         if (subWithdraws.length > 0 || withdraws.length == 0) {
             setWithdraws(withdraws.concat(subWithdraws)) 
         }
@@ -70,8 +68,12 @@ export default () => {
 
     const createWithdrawRequest = useCallback(async () => {
         setIsTransacting(true);
+        setIsTransacting(true);
+        
         const tx = await walletContract.populateTransaction.createWithdrawRequest(parseUnits((newWithdrawAmount), "ether"), newWithdrawReceiver);
         await executeAA(tx, "Withdraw request created successfully", "Error creating withdraw request");
+        
+        setIsTransacting(false);
         setIsTransacting(false);
         setNewWithdrawAmount("");
         setNewWithdrawReceiver("");
@@ -79,12 +81,14 @@ export default () => {
 
     const cancelWithdrawRequest = useCallback(async (index) => {
         setIsTableLoading(true)
+        setIsTransacting(true)
         const tx = await walletContract.populateTransaction.cancelWithdrawRequest(index);
         await executeAA(tx, "Withdraw request cancelled successfully", "Error cancelling withdraw request");
     });
 
     const executeWithdrawRequest = useCallback(async (index) => {
         setIsTableLoading(true)
+        setIsTransacting(true)
         const tx = await walletContract.populateTransaction.executeWithdrawRequest(index);
         await executeAA(tx, "Withdraw request executed successfully", "Error executing withdraw request");
     });
@@ -121,6 +125,7 @@ export default () => {
             }
             handleWithdrawRequestAdded();
             setIsTableLoading(false)
+            setIsTransacting(false)
         })
     }, []);
 
@@ -136,18 +141,17 @@ export default () => {
             }
             handleWithdrawRequestExecuted();
             setIsTableLoading(false)
+            setIsTransacting(false)
         });
     }, []);
 
     useEffect(() => {
         walletContract.on("WithdrawRequestApproved", (walletAddr, withdrawIndex, guardianApproved) => {
-            const withdrawIndexInt = bigNumberToInt(withdrawIndex) - 1;
+            const withdrawIndexInt = bigNumberToInt(withdrawIndex);
             const handleWithdrawRequestApproved = async () => {
                 const docRef = doc(firestoreDb, "withdraws", walletAddr.toString(16) + withdrawIndexInt.toString(16));
                 await setDoc(docRef, {
-                    requiredGuardians: {
-                        [guardianApproved]: true
-                    }
+                    isActive: false,
                 }, {merge: true});
                 await getActiveWithdraws();
             }
