@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Popconfirm, Tooltip, Button } from "antd";
 import { useRouter } from "next/router";
-import { CiSignpostR1, CiVault, CiUser, CiRead, CiRepeat, CiTurnR1, CiLogin } from "react-icons/ci";
-import { TfiKey } from "react-icons/tfi";
+import { CiSignpostR1, CiVault, CiUser, CiRead, CiRepeat, CiTurnR1 } from "react-icons/ci";
+import { TbLogout, TbKey } from "react-icons/tb";
 import { message } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -85,7 +85,7 @@ const Navigation = () => {
                                     alignItems: "center",
                                 }}
                             >
-                                <TfiKey size={22} color="#B2B2B2" />
+                                <TbKey size={22} color="#B2B2B2" />
                             </div>
                         </Button>
                     </Tooltip>
@@ -98,7 +98,7 @@ const Navigation = () => {
                                     alignItems: "center",
                                 }}
                             >
-                                <CiLogin size={22} color="#B2B2B2" />
+                                <TbLogout size={22} color="#B2B2B2" />
                             </div>
                         </Button>
                     </Popconfirm>

@@ -44,7 +44,7 @@
 }
 
 .nav-footer .ant-btn-text {
-    padding: 4px;
+    padding: 4px 2px;
 }
 
 .nav-address {
@@ -61,7 +61,7 @@
 
 .nav-footer-icon {
     display: flex;
-    gap: 5px;
+    gap: 3px;
 }
 
 .nav-item {
