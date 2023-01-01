@@ -159,7 +159,7 @@ export default () => {
             };
             handleRecoverExecuted();
         });
-    });
+    }, []);
 
     return {
         newSigningAddrInput,

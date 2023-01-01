@@ -71,9 +71,9 @@ const Balances = () => {
                     <div className="vault-assets-list">
                         <Token
                             name="ETH"
-                            amount="0.00"
+                            amount={balance ? roundedNumber(parseFloat(balance)) : 0}
                             toUsd={
-                                ethToUsd
+                                balance && ethToUsd
                                     ? (roundedNumber(parseFloat(balance)) * ethToUsd).toFixed(4)
                                     : 0
                             }

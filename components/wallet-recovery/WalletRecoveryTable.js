@@ -90,8 +90,8 @@ const WalletRecoveryTable = () => {
                         </Tooltip>
                     ) : (
                         <Popconfirm
-                            title="Approve this recovery?"
-                            okText="Approve"
+                            title="Support this recovery?"
+                            okText="Support"
                             icon={null}
                             onConfirm={() => {
                                 supportRecovery(record.walletAddr);
