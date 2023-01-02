@@ -112,7 +112,7 @@ const WalletRecoveryTable = () => {
     return (
         <div className="table-container">
             {notificationContextHolder}
-            {data.length === 0 ? (
+            {data.length === 0 && !isTableLoading ? (
                 <Empty description="You don't have any withdraw request to approve" />
             ) : (
                 <Table

@@ -20,18 +20,17 @@ export default () => {
             ...tx,
             to: sender
         }
-        await executeAA(tx, "Withdraw request approved successfully", "Error approving withdraw request");
-
-        const handleWithdrawRequestApproved = async () => {
+        const errorCode = await executeAA(tx, "Withdraw request approved successfully", "Error approving withdraw request");
+        
+        if (errorCode === undefined) {
             const docRef = doc(firestoreDb, "withdraws", sender.toString(16) + index.toString(16));
             await setDoc(docRef, {
                 requiredGuardians: { 
                     [`${walletAddr}`]: true 
                 },
             }, {merge: true});
-            await getActiveWithdraws();
         }
-        handleWithdrawRequestApproved();
+        await getActiveWithdraws();
         setIsTableLoading(false)
     });
 
@@ -44,13 +43,16 @@ export default () => {
         );
 
         querySnapshot.forEach((doc) => {
-            if (doc.data().isActive && withdraws.filter(w => w.index === doc.data().index).length == 0) {
-                subWithdraws.push({
-                    from: doc.id.substring(0, 42),
-                    to: doc.data().receiver,
-                    index: doc.data().index,
-                    approvals: doc.data().requiredGuardians
-                })
+            if (doc.data().requiredGuardians !== undefined) {
+                const condition = doc.data().requiredGuardians[walletAddr] !== undefined;
+                if (condition && doc.data().isActive && withdraws.filter(w => w.index === doc.data().index).length == 0) {
+                    subWithdraws.push({
+                        from: doc.id.substring(0, 42),
+                        to: doc.data().receiver,
+                        index: doc.data().index,
+                        approvals: doc.data().requiredGuardians
+                    })
+                }
             }
         });
 

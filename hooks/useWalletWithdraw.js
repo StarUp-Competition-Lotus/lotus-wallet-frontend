@@ -22,27 +22,6 @@ export default () => {
         return parseInt(parseFloat(formatEther(bigNumber, 18)) * 10 ** 18);
     }
 
-    const getGuardians = async () => {
-        try {
-            const guardians = await walletContract.getGuardians();
-            setGuardians(guardians);
-        } catch (e) {
-            console.log("error: ", e);
-            raiseFailure("Error loading guardian");
-        }
-
-    };
-
-    const getWithdrawRequestsCount = async () => {
-        try {
-            const withdrawRequestCount = await walletContract.getWithdrawRequestsCount();
-            setwithdrawRequestCount(bigNumberToInt(withdrawRequestCount));
-        } catch (e) {
-            console.log("error: ", e);
-            raiseFailure("Error loading guardian");
-        }
-    };
-
     const getActiveWithdraws = useCallback(async () => {
         setIsTableLoading(true)
         let subWithdraws = [];
@@ -64,17 +43,17 @@ export default () => {
         }
         
         setIsTableLoading(false)
-    }, []);
+    }, [walletAddr]);
 
     const createWithdrawRequest = useCallback(async () => {
-        setIsTransacting(true);
+        setIsTableLoading(true);
         setIsTransacting(true);
         
         const tx = await walletContract.populateTransaction.createWithdrawRequest(parseUnits((newWithdrawAmount), "ether"), newWithdrawReceiver);
         await executeAA(tx, "Withdraw request created successfully", "Error creating withdraw request");
         
         setIsTransacting(false);
-        setIsTransacting(false);
+        setIsTableLoading(false);
         setNewWithdrawAmount("");
         setNewWithdrawReceiver("");
     });
@@ -84,6 +63,8 @@ export default () => {
         setIsTransacting(true)
         const tx = await walletContract.populateTransaction.cancelWithdrawRequest(index);
         await executeAA(tx, "Withdraw request cancelled successfully", "Error cancelling withdraw request");
+        setIsTransacting(false);
+        setIsTableLoading(false);
     });
 
     const executeWithdrawRequest = useCallback(async (index) => {
@@ -91,6 +72,8 @@ export default () => {
         setIsTransacting(true)
         const tx = await walletContract.populateTransaction.executeWithdrawRequest(index);
         await executeAA(tx, "Withdraw request executed successfully", "Error executing withdraw request");
+        setIsTransacting(false);
+        setIsTableLoading(false);
     });
 
     useEffect(() => {
@@ -124,8 +107,6 @@ export default () => {
                 await getActiveWithdraws();
             }
             handleWithdrawRequestAdded();
-            setIsTableLoading(false)
-            setIsTransacting(false)
         })
     }, []);
 
@@ -140,8 +121,6 @@ export default () => {
                 await getActiveWithdraws();
             }
             handleWithdrawRequestExecuted();
-            setIsTableLoading(false)
-            setIsTransacting(false)
         });
     }, []);
 
@@ -160,8 +139,6 @@ export default () => {
     }, []);
 
     useEffect(() => {
-        getGuardians();
-        getWithdrawRequestsCount();
         getActiveWithdraws();
     }, []);
 
@@ -171,7 +148,6 @@ export default () => {
         newWithdrawReceiver,
         setNewWithdrawReceiver,
         withdraws,
-        withdrawRequestCount,
         isTableLoading,
         isTransacting,
         notificationContextHolder,

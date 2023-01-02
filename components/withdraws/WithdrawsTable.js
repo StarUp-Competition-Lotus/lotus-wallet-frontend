@@ -13,7 +13,6 @@ const MyGuardiansTable = () => {
         newWithdrawReceiver,
         setNewWithdrawReceiver,
         withdraws,
-        withdrawRequestCount,
         isTableLoading,
         isTransacting,
         notificationContextHolder,
@@ -28,11 +27,6 @@ const MyGuardiansTable = () => {
 
     const handleOk = async () => {
         await createWithdrawRequest();
-        setIsModalOpen(false);
-    };
-
-    const handleCancel = () => {
-        cancelWithdrawRequest(withdrawRequestCount);
         setIsModalOpen(false);
     };
 
@@ -136,7 +130,7 @@ const MyGuardiansTable = () => {
         <>
             {notificationContextHolder}
             <div className="table-container">
-                {data.length === 0 ? (
+                {data.length === 0 && !isTableLoading ? (
                     <Empty description="No Withdraw Request that needs your approvals at the moment" />
                 ) : (
                     <Table
@@ -156,7 +150,7 @@ const MyGuardiansTable = () => {
                     style={{ height: "50px", marginTop: "auto" }}
                     type="primary"
                     size="large"
-                    loading={isTransacting}
+                    disabled={isTableLoading}
                     block
                 >
                     Create New Withdraw Request
@@ -166,6 +160,9 @@ const MyGuardiansTable = () => {
                 title="Creating New Withdraw Request"
                 centered
                 open={isModalOpen}
+                onCancel={() => {
+                    setIsModalOpen(false)
+                }}
                 bodyStyle={{ margin: "1rem 0" }}
                 footer={[
                     <Button onClick={() => {setIsModalOpen(false)}}>Cancel</Button>,

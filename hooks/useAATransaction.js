@@ -13,8 +13,9 @@ export default () => {
         } catch (e) {
             console.log("error: ", e);
             raiseFailure(failureMessage);
+            return e;
         }
     };
 
-    return { executeAA, notificationContextHolder };
+    return { executeAA, notificationContextHolder};
 };
