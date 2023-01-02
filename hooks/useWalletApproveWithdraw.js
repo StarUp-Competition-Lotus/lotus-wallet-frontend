@@ -35,12 +35,10 @@ export default () => {
     });
 
     const getActiveWithdraws = useCallback(async () => {
-        setIsTableLoading(true)
+        setIsTableLoading(true);
         let subWithdraws = [];
 
-        const querySnapshot = await getDocs(
-            collection(firestoreDb, "withdraws")
-        );
+        const querySnapshot = await getDocs(collection(firestoreDb, "withdraws"));
 
         querySnapshot.forEach((doc) => {
             if (doc.data().requiredGuardians !== undefined) {
@@ -57,21 +55,20 @@ export default () => {
         });
 
         if (subWithdraws.length > 0 || withdraws.length == 0) {
-            setWithdraws(withdraws.concat(subWithdraws)) 
+            setWithdraws(withdraws.concat(subWithdraws));
         }
-        
-        setIsTableLoading(false)
+
+        setIsTableLoading(false);
     }, []);
 
     useEffect(() => {
         getActiveWithdraws();
-        
-    }, [])
+    }, []);
 
     return {
         withdraws,
         notificationContextHolder,
         isTableLoading,
-        approveWithdrawRequest
+        approveWithdrawRequest,
     };
-}
+};

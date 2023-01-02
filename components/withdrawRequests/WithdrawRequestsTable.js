@@ -18,7 +18,7 @@ const getApprovedNum = (approvals) => {
     return approvedNum;
 };
 
-const WalletRecoveryTable = () => {
+const WithdrawRequestsTable = () => {
     const { walletAddr } = useWalletContract();
     const {
         withdraws,
@@ -127,4 +127,4 @@ const WalletRecoveryTable = () => {
     );
 };
 
-export default WalletRecoveryTable;
+export default WithdrawRequestsTable;

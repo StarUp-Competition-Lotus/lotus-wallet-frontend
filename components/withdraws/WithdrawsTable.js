@@ -5,7 +5,7 @@ import { CiCircleMinus, CiCircleCheck, CiNoWaitingSign, CiCircleChevRight } from
 import { shortenAddress } from "../../utils/utils";
 import useWalletWithdraw from "../../hooks/useWalletWithdraw";
 
-const MyGuardiansTable = () => {
+const MyWithdrawsTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const {
         newWithdrawAmount,
@@ -18,7 +18,7 @@ const MyGuardiansTable = () => {
         notificationContextHolder,
         createWithdrawRequest,
         cancelWithdrawRequest,
-        executeWithdrawRequest
+        executeWithdrawRequest,
     } = useWalletWithdraw();
 
     const showModal = () => {
@@ -30,80 +30,101 @@ const MyGuardiansTable = () => {
         setIsModalOpen(false);
     };
 
-    const tableColumns = useMemo(
-        () => [
-            {
-                title: "Receiver",
-                dataIndex: "receiver",
-                key: "receiver",
-                render: (receiver) => (
-                    <Tooltip placement="topLeft" title={receiver}>
-                        <p style={{ color: "#1777FE" }}>{shortenAddress(receiver)}</p>
-                    </Tooltip>
-                ),
+    const tableColumns = useMemo(() => [
+        {
+            title: "Receiver",
+            dataIndex: "receiver",
+            key: "receiver",
+            render: (receiver) => (
+                <Tooltip placement="topLeft" title={receiver}>
+                    <p style={{ color: "#1777FE" }}>{shortenAddress(receiver)}</p>
+                </Tooltip>
+            ),
+        },
+        {
+            title: "Amount",
+            dataIndex: "amount",
+            key: "amount",
+        },
+        {
+            title: "Approvals",
+            dataIndex: "guardianApprovals",
+            key: "guardianApprovals",
+            render: (guardianApprovals) => {
+                const guardiansNum = Object.keys(guardianApprovals).length;
+                const { dropdownItems, approvedNum } =
+                    guardianApprovalsDataHandle(guardianApprovals);
+                return (
+                    <Dropdown menu={{ items: dropdownItems }} placement="bottomLeft">
+                        <p style={{ color: "#3c4048" }}>
+                            {approvedNum}/{guardiansNum}
+                        </p>
+                    </Dropdown>
+                );
             },
-            {
-                title: "Amount",
-                dataIndex: "amount",
-                key: "amount",
-            },
-            {
-                title: "Approvals",
-                dataIndex: "guardianApprovals",
-                key: "guardianApprovals",
-                render: (guardianApprovals) => {
-                    const guardiansNum = Object.keys(guardianApprovals).length;
-                    const { dropdownItems, approvedNum } = guardianApprovalsDataHandle(guardianApprovals);
-                    return (
-                        <Dropdown menu={{ items: dropdownItems }} placement="bottomLeft">
-                            <p style={{ color: "#3c4048" }}>
-                                {approvedNum}/{guardiansNum}
-                            </p>
-                        </Dropdown>
-                    );
-                },
-            },
-            {
-                title: <p style={{ textAlign: "center" }}>Cancel</p>,
-                dataIndex: "",
-                key: "",
-                render: (_, currentWithdraw) => (
-                    <Popconfirm title="Cancel this request?" cancelText="No" okText="Yes" icon={null} onConfirm={() => {cancelWithdrawRequest(currentWithdraw.index)}}>
-                        <div style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>
-                            <CiCircleMinus color="#DC3535" size={30} />
+        },
+        {
+            title: <p style={{ textAlign: "center" }}>Cancel</p>,
+            dataIndex: "",
+            key: "",
+            render: (_, currentWithdraw) => (
+                <Popconfirm
+                    title="Cancel this request?"
+                    cancelText="No"
+                    okText="Yes"
+                    icon={null}
+                    onConfirm={() => {
+                        cancelWithdrawRequest(currentWithdraw.index);
+                    }}
+                >
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignContent: "center",
+                        }}
+                    >
+                        <CiCircleMinus color="#DC3535" size={30} />
+                    </div>
+                </Popconfirm>
+            ),
+        },
+        {
+            title: <p style={{ textAlign: "center" }}>Execute</p>,
+            dataIndex: "guardianApprovals",
+            key: "guardianApprovals",
+            render: (guardianApprovals, currentWithdraw) => {
+                const guardiansNum = Object.keys(guardianApprovals).length;
+                const { approvedNum } = guardianApprovalsDataHandle(guardianApprovals);
+                return approvedNum === guardiansNum ? (
+                    <Popconfirm
+                        title="Execute this request?"
+                        cancelText="No"
+                        okText="Yes"
+                        icon={null}
+                        onConfirm={() => {
+                            executeWithdrawRequest(currentWithdraw.index);
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignContent: "center",
+                            }}
+                        >
+                            <CiCircleChevRight color="#54B435" size={30} />
                         </div>
                     </Popconfirm>
-                ),
+                ) : null;
             },
-            {
-                title: <p style={{ textAlign: "center" }}>Execute</p>,
-                dataIndex: "guardianApprovals",
-                key: "guardianApprovals",
-                render: (guardianApprovals, currentWithdraw) => {
-                    const guardiansNum = Object.keys(guardianApprovals).length;
-                    const { approvedNum } = guardianApprovalsDataHandle(guardianApprovals);
-                    return approvedNum === guardiansNum ? (
-                        <Popconfirm title="Execute this request?" cancelText="No" okText="Yes" icon={null} onConfirm={() => {executeWithdrawRequest(currentWithdraw.index)}}>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignContent: "center",
-                                }}
-                            >
-                                <CiCircleChevRight color="#54B435" size={30} />
-                            </div>
-                        </Popconfirm>
-                    ) : null;
-                },
-            },
-        ]
-    );
+        },
+    ]);
 
     const data = useMemo(() => {
         return withdraws;
     }, [withdraws]);
-    
+
     const guardianApprovalsDataHandle = (guardiansApprovals) => {
         const dropdownItems = [];
         let approvedNum = 0;
@@ -164,31 +185,40 @@ const MyGuardiansTable = () => {
                     setIsModalOpen(false)
                 }}
                 bodyStyle={{ margin: "1rem 0" }}
+                onCancel={() => {
+                    setIsModalOpen(false);
+                }}
                 footer={[
-                    <Button onClick={() => {setIsModalOpen(false)}}>Cancel</Button>,
+                    <Button
+                        onClick={() => {
+                            setIsModalOpen(false);
+                        }}
+                    >
+                        Cancel
+                    </Button>,
                     <Button type="primary" loading={isTransacting} onClick={handleOk}>
-                        Add
+                        Create
                     </Button>,
                 ]}
             >
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                     <div>
                         <h4 style={{ marginBottom: "0.3rem" }}>Receiver</h4>
-                        <Input 
-                            placeholder="0x..." 
+                        <Input
+                            placeholder="0x..."
                             value={newWithdrawReceiver}
                             onChange={(e) => {
-                                setNewWithdrawReceiver(e.target.value)
+                                setNewWithdrawReceiver(e.target.value);
                             }}
                         />
                     </div>
                     <div>
                         <h4 style={{ marginBottom: "0.3rem" }}>Amount (ETH)</h4>
-                        <Input 
-                            placeholder="0.0001" 
+                        <Input
+                            placeholder="0.0001"
                             value={newWithdrawAmount}
                             onChange={(e) => {
-                                setNewWithdrawAmount(e.target.value)
+                                setNewWithdrawAmount(e.target.value);
                             }}
                         />
                     </div>
@@ -198,4 +228,4 @@ const MyGuardiansTable = () => {
     );
 };
 
-export default MyGuardiansTable;
+export default MyWithdrawsTable;
