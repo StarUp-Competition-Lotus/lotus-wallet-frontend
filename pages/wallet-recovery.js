@@ -20,7 +20,7 @@ export default () => {
     return (
         <PageLayout>
             <Head>
-                <title>Louts | Wallet Recovery</title>
+                <title>Lotus | Wallet Recovery</title>
                 <link rel="icon" href="/logo.png" />
             </Head>
             <WalletRecovery />

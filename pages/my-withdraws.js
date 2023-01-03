@@ -20,7 +20,7 @@ export default () => {
     return (
         <PageLayout>
             <Head>
-                <title>Louts | My Withdraws</title>
+                <title>Lotus | My Withdraws</title>
                 <link rel="icon" href="/logo.png" />
             </Head>
             <Withdraws />

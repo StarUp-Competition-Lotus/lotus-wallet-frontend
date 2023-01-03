@@ -152,7 +152,7 @@ const MyWithdrawsTable = () => {
             {notificationContextHolder}
             <div className="table-container">
                 {data.length === 0 && !isTableLoading ? (
-                    <Empty description="No Withdraw Request that needs your approvals at the moment" />
+                    <Empty description="You have no active withdraws at the moment" />
                 ) : (
                     <Table
                         columns={tableColumns}

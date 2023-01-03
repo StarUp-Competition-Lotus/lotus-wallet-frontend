@@ -76,7 +76,7 @@ export default () => {
     return (
         <>
             <Head>
-                <title>Louts | Welcome</title>
+                <title>Lotus | Welcome</title>
                 <link rel="icon" href="/logo.png" />
             </Head>
             {notificationContextHolder}

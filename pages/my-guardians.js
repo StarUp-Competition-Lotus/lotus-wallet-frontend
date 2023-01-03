@@ -20,7 +20,7 @@ export default () => {
     return (
         <PageLayout>
             <Head>
-                <title>Louts | My Guardians</title>
+                <title>Lotus | My Guardians</title>
                 <link rel="icon" href="/logo.png" />
             </Head>
             <MyGuardians />

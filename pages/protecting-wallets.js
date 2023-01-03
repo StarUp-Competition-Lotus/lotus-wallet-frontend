@@ -20,7 +20,7 @@ export default () => {
     return (
         <PageLayout>
             <Head>
-                <title>Louts | Protecting Wallets</title>
+                <title>Lotus | Protecting Wallets</title>
                 <link rel="icon" href="/logo.png" />
             </Head>
             <ProtectingWallets />
