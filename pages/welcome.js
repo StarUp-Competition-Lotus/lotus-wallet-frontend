@@ -89,7 +89,7 @@ export default () => {
                 </div>
                 <div className="welcome-action-buttons">
                     <ActionButton
-                        disabled={isCreatingWallet}
+                        disabled={process.env.ALLOW_CREATE_WALLET === "false" || isCreatingWallet}
                         loading={isCreatingWallet}
                         icon={<CiWallet />}
                         title="Create a new Wallet"
